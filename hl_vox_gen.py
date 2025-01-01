@@ -1,6 +1,5 @@
 import sys
 import wave
-from pathlib import Path
 import os
 def out_gen(infiles, outfile, cwd):
     data = []
