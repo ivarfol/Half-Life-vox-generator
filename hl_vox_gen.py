@@ -57,7 +57,7 @@ def main():
                     print(f"invalid argument {argument} does not exist")
                     error_flag = False
                     break
-            print(f"arguments: {arg_new}\noutput file: {outfile}\nvoxdir: {vox_dir[2:]}")
+            print("arguments: " + "".join(word + " " for word in arg_new) + f"\noutput file: {outfile}\nvoxdir: {vox_dir[2:]}")
             if error_flag:
                 out_gen(arg_new, outfile, cwd)
 
