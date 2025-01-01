@@ -23,7 +23,12 @@ def main():
     error_flag = True
     options = []
     if arg[-1] == "--help" or arg[-1] == "-h":
-        print("help")
+        print("Half life vox generator\n")
+        print("usage: python3 hl_vox_gen [option(s)] [file(s)]")
+        print("supported optins [default in brackets]:")
+        print("-v use different directory for .wav files [vox]")
+        print("-o specify the name of the output file [out.wav]")
+        print("-h or --help print this message and exit")
     else:
         new_arg = []
         new_arg.extend(arg)
