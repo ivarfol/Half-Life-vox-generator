@@ -30,7 +30,7 @@ def main():
         vox_words = os.listdir()
         for argument in arg:
             if not argument + ".wav" in vox_words:
-                print("invalid argument")
+                print(f"invalid argument {argument}.wav does not exist")
                 error_flag = False
                 break
         print(f"arguments: {arg}\noutput file: {outfile}")
