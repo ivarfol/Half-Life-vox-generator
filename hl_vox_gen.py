@@ -15,18 +15,53 @@ def control_dict(control):
         ctrl_dict[control[controlnum][2]] = controlnum
     return(ctrl_dict)
 
-def word_sound(control, ctrl_dict, filenum, infiles):
+def gen_control_arr(ctrl, control_arr):
+    if ctrl[2]:
+        if ctrl[0] == "e":
+            control_arr[0] = ctrl[1]
+        elif ctrl[0] == "p":
+            control_arr[1] = ctrl[1]
+        elif ctrl[0] == "s":
+            control_arr[2] = ctrl[1]
+        elif ctrl[0] == "v":
+            control_arr[3] = ctrl[1]
+        elif ctrl[0] == "t":
+            control_arr[4] = ctrl[1]
+    return(control_arr)
+
+def postcontrol(infile, control_arr):
+    if control_arr[0] != 100:
+        pass # cut end
+    elif control_arr[2] != 0:
+        pass # cut start
+    elif control_arr[1] != 0:
+        pass # change pitch
+    elif control_arr[3] != 100:
+        pass # change volume
+    elif control_arr[4] != 0:
+        pass # time compression
+    return()
+
+def word_sound(control, ctrl_dict, filenum, infiles, control_arr):
     if filenum in ctrl_dict.keys():
         ctrl = get_control(control[ctrl_dict.get(filenum)])
-        return(AudioSegment.from_wav(infiles[filenum])) #placeholder
+        if ctrl[2]:
+            control_arr = gen_control_arr(ctrl, control_arr)
+        else:
+            tmp_control_arr = gen_control_arr(ctrl, control_arr)
+        print(control_arr)
+        return(AudioSegment.from_wav(infiles[filenum]), control_arr) #placeholder
     else:
-        return(AudioSegment.from_wav(infiles[filenum]))
+        return(AudioSegment.from_wav(infiles[filenum]), control_arr)
 
 def out_gen(infiles, outfile, cwd, pl, control):
     ctrl_dict = control_dict(control)
-    sound = word_sound(control, ctrl_dict, 0, infiles)
+    control_arr = [100, 0, 0, 100, 0] #epsvt
+    sound, control_arr = word_sound(control, ctrl_dict, 0, infiles, control_arr)
     for filenum in range(1, len(infiles)):
-        sound += word_sound(control, ctrl_dict, filenum, infiles)
+        tmp = word_sound(control, ctrl_dict, filenum, infiles, control_arr)
+        sound += tmp[0]
+        control_arr = tmp[1]
     os.chdir(cwd)
     if pl != 2:
         sound.export(outfile, format="wav")
