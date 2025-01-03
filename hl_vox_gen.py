@@ -5,7 +5,7 @@ from pydub.playback import play
 
 def get_control(control):
     out = []
-    out += [control[0][1:-2], control[1]]
+    out += [control[0][1], int(control[0][2:-1]), control[1]]
     print(out)
     return(out)
 
