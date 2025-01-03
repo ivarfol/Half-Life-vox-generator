@@ -32,6 +32,7 @@ def main():
         print("-h or --help print this message and exit")
     else:
         new_arg = []
+        control = []
         new_arg.extend(arg)
         offset = 0
         for argnum in range(len(arg)):
@@ -56,6 +57,17 @@ def main():
                     new_arg.pop(argnum - offset)
                     new_arg.pop(argnum - offset)
                     offset += 2
+            elif arg[argnum][-1] == "}":
+                if arg[argnum][0] == "{":
+                    new_arg.pop(argnum - offset)
+                    offset += 1
+                    control += [[arg[argnum], True, argnum - offset]]
+                else:
+                    for letternum in range(len(arg[argnum])):
+                        if arg[argnum][letternum] == "{":
+                            new_arg[argnum - offset] = new_arg[argnum - offset][:letternum]
+                            control += [[arg[argnum][letternum:], False, argnum - offset]]
+                            break
         if error_flag:
             os.chdir(vox_dir)
             vox_words = os.listdir()
@@ -68,7 +80,7 @@ def main():
                     print(f"invalid argument {argument} does not exist")
                     error_flag = False
                     break
-            print("arguments: " + "".join(word + " " for word in arg_new) + f"\noutput file: {outfile}\nvoxdir: {vox_dir[2:]}")
+            print("arguments: " + "".join(word + " " for word in arg_new) + f"\ncontrol: {control}\noutput file: {outfile}\nvoxdir: {vox_dir[2:]}")
             if error_flag:
                 out_gen(arg_new, outfile, cwd, pl)
                 print("Success")
