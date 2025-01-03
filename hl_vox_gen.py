@@ -2,10 +2,31 @@ import sys
 import os
 from pydub import AudioSegment
 from pydub.playback import play
-def out_gen(infiles, outfile, cwd, pl):
-    sound = AudioSegment.from_wav(infiles[0])
+
+def get_control(control):
+    out = []
+    out += [control[0][1:-2], control[1]]
+    print(out)
+    return(out)
+
+def control_dict(control):
+    ctrl_dict = {}
+    for controlnum in range(len(control)):
+        ctrl_dict[control[controlnum][2]] = controlnum
+    return(ctrl_dict)
+
+def word_sound(control, ctrl_dict, filenum, infiles):
+    if filenum in ctrl_dict.keys():
+        ctrl = get_control(control[ctrl_dict.get(filenum)])
+        return(AudioSegment.from_wav(infiles[filenum])) #placeholder
+    else:
+        return(AudioSegment.from_wav(infiles[filenum]))
+
+def out_gen(infiles, outfile, cwd, pl, control):
+    ctrl_dict = control_dict(control)
+    sound = word_sound(control, ctrl_dict, 0, infiles)
     for filenum in range(1, len(infiles)):
-        sound += AudioSegment.from_wav(infiles[filenum])
+        sound += word_sound(control, ctrl_dict, filenum, infiles)
     os.chdir(cwd)
     if pl != 2:
         sound.export(outfile, format="wav")
@@ -82,7 +103,7 @@ def main():
                     break
             print("arguments: " + "".join(word + " " for word in arg_new) + f"\ncontrol: {control}\noutput file: {outfile}\nvoxdir: {vox_dir[2:]}")
             if error_flag:
-                out_gen(arg_new, outfile, cwd, pl)
+                out_gen(arg_new, outfile, cwd, pl, control)
                 print("Success")
 
 if __name__ == "__main__":
