@@ -17,9 +17,8 @@ def get_control(control):
     tmp = control[0].split(" ")
     tmp[0] = tmp[0][1:]
     tmp[-1] = tmp[-1][:-1]
-    print(tmp)
-    out += [control[0][1], int(control[0][2:-1]), control[1]]
-    #print(out)
+    for var in tmp:
+        out += [[var[0], int(var[1:])]]
     return(out)
 
 def control_dict(control):
@@ -29,21 +28,23 @@ def control_dict(control):
             ctrl_dict[control[controlnum][2]] = [ctrl_dict[control[controlnum][2]], controlnum]
         else:
             ctrl_dict[control[controlnum][2]] = controlnum
-    print(ctrl_dict)
+    print("dict", ctrl_dict)
     return(ctrl_dict)
 
 def gen_control_arr(ctrl, control_arr):
-    if ctrl[2]:
-        if ctrl[0] == "e":
-            control_arr[0] = ctrl[1]
-        elif ctrl[0] == "p":
-            control_arr[1] = ctrl[1]
-        elif ctrl[0] == "s":
-            control_arr[2] = ctrl[1]
-        elif ctrl[0] == "v":
-            control_arr[3] = ctrl[1]
-        elif ctrl[0] == "t":
-            control_arr[4] = ctrl[1]
+    print("ctrl:", ctrl)
+    for contr_var in ctrl:
+        if contr_var[0] == "e":
+            control_arr[0] = contr_var[1]
+        elif contr_var[0] == "p":
+            control_arr[1] = contr_var[1]
+        elif contr_var[0] == "s":
+            control_arr[2] = contr_var[1]
+        elif contr_var[0] == "v":
+            control_arr[3] = contr_var[1]
+        elif contr_var[0] == "t":
+            control_arr[4] = contr_var[1]
+    print("ctrl arr", control_arr)
     return(control_arr)
 
 def postcontrol(infile, control_arr):
@@ -61,26 +62,30 @@ def postcontrol(infile, control_arr):
 
 def word_sound(control, ctrl_dict, filenum, infiles, control_arr):
     tmp_control_arr = []
+    temp = []
     if filenum in ctrl_dict.keys():
         tmp = ctrl_dict.get(filenum)
         if not type(tmp) == int:
             if control[tmp[0]][1]:
-                ctrlt = control[tmp[0]]
-                ctrlf = control[tmp[1]]
+                ctrlt = get_control(control[tmp[0]])
+                ctrlf = get_control(control[tmp[1]])
             else:
-                ctrlt = control[tmp[1]]
-                ctrlf = control[tmp[0]]
+                ctrlt = get_control(control[tmp[1]])
+                ctrlf = get_control(control[tmp[0]])
         else:
             if control[tmp][1]:
-                ctrlt = control[tmp]
+                ctrlt = get_control(control[tmp])
                 ctrlf = 0
             else:
-                ctrlf = control[tmp]
+                ctrlf = get_control(control[tmp])
                 ctrlt = 0
+        print("ctrl t:", ctrlt)
+        print("ctrl f:", ctrlf)
         if ctrlt:
             control_arr = gen_control_arr(ctrlt, control_arr)
         if ctrlf:
-            tmp_control_arr = gen_control_arr(ctrlf, control_arr)
+            temp.extend(control_arr)
+            tmp_control_arr = gen_control_arr(ctrlf, temp)
         print("control:", control_arr)
         print("tmp control:", tmp_control_arr)
         return(AudioSegment.from_wav(infiles[filenum]), control_arr) #placeholder
