@@ -28,11 +28,11 @@ def control_dict(control):
             ctrl_dict[control[controlnum][2]] = [ctrl_dict[control[controlnum][2]], controlnum]
         else:
             ctrl_dict[control[controlnum][2]] = controlnum
-    print("dict", ctrl_dict)
+    #print("dict", ctrl_dict)
     return(ctrl_dict)
 
 def gen_control_arr(ctrl, control_arr):
-    print("ctrl:", ctrl)
+    #print("ctrl:", ctrl)
     for contr_var in ctrl:
         if contr_var[0] == "e":
             control_arr[0] = contr_var[1]
@@ -44,7 +44,7 @@ def gen_control_arr(ctrl, control_arr):
             control_arr[3] = contr_var[1]
         elif contr_var[0] == "t":
             control_arr[4] = contr_var[1]
-    print("ctrl arr", control_arr)
+    #print("ctrl arr", control_arr)
     return(control_arr)
 
 def postcontrol(infile, control_arr):
@@ -79,15 +79,15 @@ def word_sound(control, ctrl_dict, filenum, infiles, control_arr):
             else:
                 ctrlf = get_control(control[tmp])
                 ctrlt = 0
-        print("ctrl t:", ctrlt)
-        print("ctrl f:", ctrlf)
+        #print("ctrl t:", ctrlt)
+        #print("ctrl f:", ctrlf)
         if ctrlt:
             control_arr = gen_control_arr(ctrlt, control_arr)
         if ctrlf:
             temp.extend(control_arr)
             tmp_control_arr = gen_control_arr(ctrlf, temp)
-        print("control:", control_arr)
-        print("tmp control:", tmp_control_arr)
+        #print("control:", control_arr)
+        #print("tmp control:", tmp_control_arr)
         return(AudioSegment.from_wav(infiles[filenum]), control_arr) #placeholder
     else:
         return(AudioSegment.from_wav(infiles[filenum]), control_arr)
@@ -151,6 +151,8 @@ def main():
                     new_arg.pop(argnum - offset)
                     new_arg.pop(argnum - offset)
                     offset += 2
+                    if pl == 2:
+                        outfile = "n/a"
             else:
                 for letternum in range(len(arg[argnum])):
                     if arg[argnum][letternum] == "{":
