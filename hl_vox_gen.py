@@ -3,6 +3,15 @@ import os
 from pydub import AudioSegment
 from pydub.playback import play
 
+def find_end(arg, argnum, letternum):
+    out = arg[argnum][letternum:]
+    for argnum_new in range(argnum, len(arg)):
+        if argnum_new != argnum:
+            out += " " + arg[argnum_new]
+        if arg[argnum_new][-1] == "}":
+            break
+    return(out, argnum_new)
+
 def get_control(control):
     out = []
     out += [control[0][1], int(control[0][2:-1]), control[1]]
@@ -113,17 +122,22 @@ def main():
                     new_arg.pop(argnum - offset)
                     new_arg.pop(argnum - offset)
                     offset += 2
-            elif arg[argnum][-1] == "}":
-                if arg[argnum][0] == "{":
-                    new_arg.pop(argnum - offset)
-                    offset += 1
-                    control += [[arg[argnum], True, argnum - offset]]
-                else:
-                    for letternum in range(len(arg[argnum])):
-                        if arg[argnum][letternum] == "{":
+            else:
+                for letternum in range(len(arg[argnum])):
+                    if arg[argnum][letternum] == "{":
+                        if letternum == 0:
+                            new_arg.pop(argnum - offset)
+                            offset += 1
+                            temp, cut = find_end(arg, argnum, 0)
+                            control += [[temp, True, argnum - offset]]
+                        else:
                             new_arg[argnum - offset] = new_arg[argnum - offset][:letternum]
-                            control += [[arg[argnum][letternum:], False, argnum - offset]]
-                            break
+                            temp, cut = find_end(arg, argnum, letternum)
+                            control += [[temp, False, argnum - offset]]
+                        for i in range(argnum, cut):
+                            new_arg.pop(argnum + 1 - offset)
+                            offset += 1
+                        break
         if error_flag:
             os.chdir(vox_dir)
             vox_words = os.listdir()
