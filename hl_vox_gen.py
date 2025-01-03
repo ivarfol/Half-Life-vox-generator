@@ -14,8 +14,12 @@ def find_end(arg, argnum, letternum):
 
 def get_control(control):
     out = []
+    tmp = control[0].split(" ")
+    tmp[0] = tmp[0][1:]
+    tmp[-1] = tmp[-1][:-1]
+    print(tmp)
     out += [control[0][1], int(control[0][2:-1]), control[1]]
-    print(out)
+    #print(out)
     return(out)
 
 def control_dict(control):
@@ -126,17 +130,18 @@ def main():
                 for letternum in range(len(arg[argnum])):
                     if arg[argnum][letternum] == "{":
                         if letternum == 0:
-                            new_arg.pop(argnum - offset)
-                            offset += 1
                             temp, cut = find_end(arg, argnum, 0)
                             control += [[temp, True, argnum - offset]]
+                            if cut == argnum:
+                                new_arg.pop(argnum - offset)
+                                offset += 1
+                            for i in range(cut - argnum - offset + 1):
+                                new_arg.pop(argnum + i - offset)
+                                offset += 1
                         else:
                             new_arg[argnum - offset] = new_arg[argnum - offset][:letternum]
                             temp, cut = find_end(arg, argnum, letternum)
                             control += [[temp, False, argnum - offset]]
-                        for i in range(argnum, cut):
-                            new_arg.pop(argnum + 1 - offset)
-                            offset += 1
                         break
         if error_flag:
             os.chdir(vox_dir)
