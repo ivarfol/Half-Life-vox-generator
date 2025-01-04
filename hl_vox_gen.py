@@ -2,6 +2,8 @@ import sys
 import os
 from platform import system
 from pydub import AudioSegment
+from pydub.utils import ratio_to_db
+from math import log
 if system() != "Windows":
     from pydub.playback import play
 
@@ -62,7 +64,7 @@ def postcontrol(infile, control_arr):
         hipitch_sound = hipitch_sound.set_frame_rate(11025)
         sound = hipitch_sound
     if control_arr[3] != 100:
-        sound = sound + (control_arr[3] - 100) / 10 # change volume, 0 = -10db
+        sound += 10 * log(control_arr[3] / 100, 10) # change volume, 0 = -10db
     if control_arr[4] != 0:
         pass # time compression
     return(sound)
