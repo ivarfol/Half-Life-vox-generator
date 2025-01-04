@@ -48,17 +48,22 @@ def gen_control_arr(ctrl, control_arr):
     return(control_arr)
 
 def postcontrol(infile, control_arr):
+    sound = AudioSegment.from_wav(infile) # cut end
     if control_arr[0] != 100:
-        pass # cut end
-    elif control_arr[2] != 0:
-        pass # cut start
-    elif control_arr[1] != 0:
-        pass # change pitch
-    elif control_arr[3] != 100:
-        pass # change volume
-    elif control_arr[4] != 0:
+        sound = sound[:control_arr[0] - 100]
+    if control_arr[2] != 0:
+        sound = sound[control_arr[2]:] # cut start
+    if control_arr[1] != 0:
+        octaves = control_arr[1] / 256 # change pitch
+        new_sample_rate = int(sound.frame_rate * (2 ** octaves))
+        hipitch_sound = sound._spawn(sound.raw_data, overrides={'frame_rate': new_sample_rate})
+        hipitch_sound = hipitch_sound.set_frame_rate(44100)
+        sound = hipitch_sound
+    if control_arr[3] != 100:
+        sound = sound + control_arr[3] - 100 # change volume
+    if control_arr[4] != 0:
         pass # time compression
-    return()
+    return(sound)
 
 def word_sound(control, ctrl_dict, filenum, infiles, control_arr):
     tmp_control_arr = []
@@ -86,11 +91,13 @@ def word_sound(control, ctrl_dict, filenum, infiles, control_arr):
         if ctrlf:
             temp.extend(control_arr)
             tmp_control_arr = gen_control_arr(ctrlf, temp)
+            return(postcontrol(infiles[filenum], tmp_control_arr), control_arr)
+        else:
+            return(postcontrol(infiles[filenum], control_arr), control_arr)
         #print("control:", control_arr)
         #print("tmp control:", tmp_control_arr)
-        return(AudioSegment.from_wav(infiles[filenum]), control_arr) #placeholder
     else:
-        return(AudioSegment.from_wav(infiles[filenum]), control_arr)
+        return(postcontrol(infiles[filenum], control_arr), control_arr)
 
 def out_gen(infiles, outfile, cwd, pl, control):
     ctrl_dict = control_dict(control)
