@@ -128,7 +128,7 @@ def main():
     error_flag = True
     options = []
     pl = 0
-    if arg[-1] == "--help" or arg[-1] == "-h":
+    if len(arg) < 1 or arg[-1] == "--help" or arg[-1] == "-h":
         print("Half life vox generator\n")
         print("usage: python3 hl_vox_gen [option(s)] [file(s)]")
         print("supported optins [default in brackets]:")
