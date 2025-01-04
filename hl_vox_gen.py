@@ -1,7 +1,9 @@
 import sys
 import os
+from platform import system
 from pydub import AudioSegment
-from pydub.playback import play
+if system() != "Windows":
+    from pydub.playback import play
 
 def find_end(arg, argnum, letternum):
     out = arg[argnum][letternum:]
@@ -99,7 +101,7 @@ def word_sound(control, ctrl_dict, filenum, infiles, control_arr):
     else:
         return(postcontrol(infiles[filenum], control_arr), control_arr)
 
-def out_gen(infiles, outfile, cwd, pl, control):
+def out_gen(infiles, outfile, cwd, pl, control, syst):
     ctrl_dict = control_dict(control)
     control_arr = [100, 0, 0, 100, 0] #epsvt
     sound, control_arr = word_sound(control, ctrl_dict, 0, infiles, control_arr)
@@ -110,12 +112,16 @@ def out_gen(infiles, outfile, cwd, pl, control):
     os.chdir(cwd)
     if pl != 2:
         sound.export(outfile, format="wav")
-    if pl != 1:
+    if pl != 1 and syst != "Windows":
         play(sound)
 
 def main():
+    syst = system()
     cwd = os.getcwd()
-    os.chdir(os.path.expanduser("~/.local/share/Steam/steamapps/common/Half-Life/valve/sound/"))
+    if syst == "Windows":
+        os.chdir("C:\\Program Files (x86)\\Steam\\steamapps\\common\\Half-Life\\valve\\sound")
+    else:
+        os.chdir(os.path.expanduser("~/.local/share/Steam/steamapps/common/Half-Life/valve/sound/"))
     vox_dir = "./vox"
     arg = sys.argv[1:]
     outfile = "out.wav"
@@ -128,8 +134,9 @@ def main():
         print("supported optins [default in brackets]:")
         print("-v use different directory for .wav files [vox]")
         print("-o specify the name of the output file [out.wav]")
-        print("-p play file after generating if 0, only generate if one")
-        print("only play if 2 [0]")
+        if syst != "Windows":
+            print("-p play file after generating if 0, only generate if one")
+            print("only play if 2 [0]")
         print("-h or --help print this message and exit")
     else:
         new_arg = []
@@ -153,7 +160,7 @@ def main():
                         new_arg.pop(argnum - offset)
                         new_arg.pop(argnum - offset)
                         offset += 2
-                elif arg[argnum] == "-p":
+                elif arg[argnum] == "-p" and syst != "Windows":
                     pl = int(arg[argnum + 1])
                     new_arg.pop(argnum - offset)
                     new_arg.pop(argnum - offset)
@@ -200,7 +207,7 @@ def main():
                     break
             print("arguments: " + "".join(word + " " for word in arg_new) + f"\ncontrol: {control}\noutput file: {outfile}\nvoxdir: {vox_dir[2:]}")
             if error_flag:
-                out_gen(arg_new, outfile, cwd, pl, control)
+                out_gen(arg_new, outfile, cwd, pl, control, syst)
                 print("Success")
 
 if __name__ == "__main__":
