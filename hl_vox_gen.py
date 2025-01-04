@@ -2,7 +2,6 @@ import sys
 import os
 from platform import system
 from pydub import AudioSegment
-from pydub.utils import ratio_to_db
 from math import log
 if system() != "Windows":
     from pydub.playback import play
