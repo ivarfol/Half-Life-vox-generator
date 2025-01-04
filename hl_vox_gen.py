@@ -169,13 +169,16 @@ def main():
                             if cut == argnum:
                                 new_arg.pop(argnum - offset)
                                 offset += 1
-                            for i in range(cut - argnum - offset + 1):
-                                new_arg.pop(argnum + i - offset)
-                                offset += 1
                         else:
                             new_arg[argnum - offset] = new_arg[argnum - offset][:letternum]
                             temp, cut = find_end(arg, argnum, letternum)
                             control += [[temp, False, argnum - offset]]
+                            offset -= 1
+                        for i in range(cut - argnum - offset + 1):
+                            new_arg.pop(argnum + i - offset)
+                            offset += 1
+                        if letternum != 0:
+                            offset += 1
                         break
         if error_flag:
             os.chdir(vox_dir)
