@@ -60,7 +60,7 @@ def postcontrol(infile, control_arr):
         hipitch_sound = hipitch_sound.set_frame_rate(44100)
         sound = hipitch_sound
     if control_arr[3] != 100:
-        sound = sound + control_arr[3] - 100 # change volume
+        sound = sound + (control_arr[3] - 100) / 10 # change volume, 0 = -10db
     if control_arr[4] != 0:
         pass # time compression
     return(sound)
