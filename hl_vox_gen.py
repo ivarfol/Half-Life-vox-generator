@@ -10,7 +10,8 @@ def find_end(arg, argnum, letternum):
             out += " " + arg[argnum_new]
         if arg[argnum_new][-1] == "}":
             break
-    return(out, argnum_new)
+    print("out:", out)
+    return(out, len(out.split()))
 
 def get_control(control):
     out = []
@@ -161,6 +162,7 @@ def main():
                     if pl == 2:
                         outfile = "n/a"
             else:
+                print("arg:", arg)
                 for letternum in range(len(arg[argnum])):
                     if arg[argnum][letternum] == "{":
                         if letternum == 0:
@@ -169,16 +171,24 @@ def main():
                             if cut == argnum:
                                 new_arg.pop(argnum - offset)
                                 offset += 1
+                            else:
+                                for i in range(cut):
+                                    print("to cut:", new_arg[argnum + i - offset])
+                                    new_arg.pop(argnum + i - offset)
+                                    offset += 1
                         else:
+                            if new_arg[argnum - offset][-1] == "}":
+                                temp = new_arg[argnum - offset][letternum:]
+                                cut = 1
+                            else:
+                                temp, cut = find_end(arg, argnum, letternum)
                             new_arg[argnum - offset] = new_arg[argnum - offset][:letternum]
-                            temp, cut = find_end(arg, argnum, letternum)
                             control += [[temp, False, argnum - offset]]
-                            offset -= 1
-                        for i in range(cut - argnum - offset + 1):
-                            new_arg.pop(argnum + i - offset)
-                            offset += 1
-                        if letternum != 0:
-                            offset += 1
+                            #print(cut)
+                            for j in range(cut - 1):
+                                print("to cut:", new_arg[argnum + j - offset + 1])
+                                new_arg.pop(argnum + j - offset + 1)
+                                offset += 1
                         break
         if error_flag:
             os.chdir(vox_dir)
