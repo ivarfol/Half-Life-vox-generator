@@ -10,7 +10,6 @@ def find_end(arg, argnum, letternum):
             out += " " + arg[argnum_new]
         if arg[argnum_new][-1] == "}":
             break
-    print("out:", out)
     return(out, len(out.split()))
 
 def get_control(control):
@@ -49,13 +48,13 @@ def gen_control_arr(ctrl, control_arr):
     return(control_arr)
 
 def postcontrol(infile, control_arr):
-    sound = AudioSegment.from_wav(infile) # cut end
+    sound = AudioSegment.from_wav(infile) # cut end, 100 = 0.1s
     if control_arr[0] != 100:
         sound = sound[:control_arr[0] - 100]
     if control_arr[2] != 0:
-        sound = sound[control_arr[2]:] # cut start
+        sound = sound[control_arr[2]:] # cut start, 100 = 0.1s
     if control_arr[1] != 0:
-        octaves = control_arr[1] / 256 # change pitch
+        octaves = control_arr[1] / 255 # change pitch, 255 = 1 octave
         new_sample_rate = int(sound.frame_rate * (2 ** octaves))
         hipitch_sound = sound._spawn(sound.raw_data, overrides={'frame_rate': new_sample_rate})
         hipitch_sound = hipitch_sound.set_frame_rate(44100)
@@ -162,7 +161,6 @@ def main():
                     if pl == 2:
                         outfile = "n/a"
             else:
-                print("arg:", arg)
                 for letternum in range(len(arg[argnum])):
                     if arg[argnum][letternum] == "{":
                         if letternum == 0:
@@ -173,7 +171,6 @@ def main():
                                 offset += 1
                             else:
                                 for i in range(cut):
-                                    print("to cut:", new_arg[argnum + i - offset])
                                     new_arg.pop(argnum + i - offset)
                                     offset += 1
                         else:
@@ -186,7 +183,6 @@ def main():
                             control += [[temp, False, argnum - offset]]
                             #print(cut)
                             for j in range(cut - 1):
-                                print("to cut:", new_arg[argnum + j - offset + 1])
                                 new_arg.pop(argnum + j - offset + 1)
                                 offset += 1
                         break
