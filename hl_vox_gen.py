@@ -50,6 +50,17 @@ def gen_control_arr(ctrl, control_arr):
     #print("ctrl arr", control_arr)
     return(control_arr)
 
+def timecompress(time_pr, sound):
+    length = len(sound)
+    step = length / 8
+    cut_pr = step / 100 * time_pr
+    current_pos = step
+    new_sound = sound[:step]
+    for _ in range(8):
+        new_sound += sound[current_pos + cut_pr:current_pos + step]
+        current_pos += step
+    return(new_sound)
+
 def postcontrol(infile, control_arr):
     sound = AudioSegment.from_wav(infile) # cut end, 100 = 0.1s
     if control_arr[0] != 100:
@@ -65,7 +76,7 @@ def postcontrol(infile, control_arr):
     if control_arr[3] != 100:
         sound += 10 * log(control_arr[3] / 100, 10) # change volume, 0 = -10db
     if control_arr[4] != 0:
-        pass # time compression
+        sound = timecompress(control_arr[4], sound) # time compression
     return(sound)
 
 def word_sound(control, ctrl_dict, filenum, infiles, control_arr):
