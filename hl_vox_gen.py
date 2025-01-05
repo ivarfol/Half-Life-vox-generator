@@ -11,7 +11,7 @@ def find_end(arg, argnum, letternum):
     for argnum_new in range(argnum, len(arg)):
         if argnum_new != argnum:
             out += " " + arg[argnum_new]
-        if arg[argnum_new][-1] == "]":
+        if arg[argnum_new][-1] == ")":
             break
     return(out, len(out.split()))
 
@@ -136,6 +136,16 @@ def main():
         os.chdir(os.path.expanduser("~/.local/share/Steam/steamapps/common/Half-Life/valve/sound/"))
     vox_dir = "./vox"
     arg = sys.argv[1:]
+    for argument_num in range(len(arg)):
+        if len(arg[argument_num]) > 2 and " " in arg[argument_num]:
+            sentence = arg[argument_num].split(" ")
+            arg.pop(argument_num)
+            word_num = 0
+            for word in sentence:
+                if word != "":
+                    arg.insert(argument_num + word_num, word)
+                    word_num += 1
+    print(arg)
     outfile = "out.wav"
     error_flag = True
     options = []
@@ -181,7 +191,7 @@ def main():
                         outfile = "n/a"
             else:
                 for letternum in range(len(arg[argnum])):
-                    if arg[argnum][letternum] == "[":
+                    if arg[argnum][letternum] == "(":
                         if letternum == 0:
                             temp, cut = find_end(arg, argnum, 0)
                             control += [[temp, True, argnum - offset]]
@@ -193,7 +203,7 @@ def main():
                                     new_arg.pop(argnum + i - offset)
                                     offset += 1
                         else:
-                            if new_arg[argnum - offset][-1] == "]":
+                            if new_arg[argnum - offset][-1] == ")":
                                 temp = new_arg[argnum - offset][letternum:]
                                 cut = 1
                             else:
