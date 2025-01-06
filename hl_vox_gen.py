@@ -136,6 +136,7 @@ def main():
         os.chdir(os.path.expanduser("~/.local/share/Steam/steamapps/common/Half-Life/valve/sound/"))
     vox_dir = "./vox"
     arg = sys.argv[1:]
+    swap_tup = (".", ",")
     for argument_num in range(len(arg)):
         if len(arg[argument_num]) > 2 and " " in arg[argument_num]:
             sentence = arg[argument_num].split(" ")
@@ -143,8 +144,17 @@ def main():
             word_num = 0
             for word in sentence:
                 if word != "":
-                    arg.insert(argument_num + word_num, word)
-                    word_num += 1
+                    if word[-1] in swap_tup:
+                        arg.insert(argument_num + word_num, word[:-1])
+                        word_num += 1
+                        if word[:-1] == ".":
+                            arg.insert(argument_num + word_num, "_period")
+                        else:
+                            arg.insert(argument_num + word_num, "_comma")
+                        word_num += 1
+                    else:
+                        arg.insert(argument_num + word_num, word)
+                        word_num += 1
     outfile = "out.wav"
     error_flag = True
     options = []
