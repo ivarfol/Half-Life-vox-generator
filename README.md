@@ -1,5 +1,6 @@
 # Half-Life-vox-generator
 This is a program for joining and manipulating half life audio files
+You will need pydub library installed
 ## Usage
 python3 hl\_vox\_gen.py \[option(s)\] \["sentence"\] \[option(s)\]
 supported options \[default in brackets\]:
@@ -10,6 +11,9 @@ supported options \[default in brackets\]:
 if you are using linux you can also use -p option
 to specify whether the file will be generated and played (-p 0 default),
 generated only (-p 1), or played only (-p 2)
+
+an example:
+```python3 hl_vox_gen.py -o hello_world "(p130) bizwarn bizwarn bizwarn (e95 p95) attention  this announcement system now(e100) under military command"```
 
 You can use sintax from sentences.txt in your
 ~/.local/share/Steam/steamapps/common/Half-Life/valve/sound/
