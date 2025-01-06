@@ -137,29 +137,11 @@ def main():
     vox_dir = "./vox"
     arg = sys.argv[1:]
     swap_tup = (".", ",")
-    for argument_num in range(len(arg)):
-        if len(arg[argument_num]) > 2 and " " in arg[argument_num]:
-            sentence = arg[argument_num].split(" ")
-            arg.pop(argument_num)
-            word_num = 0
-            for word in sentence:
-                if word != "":
-                    if word[-1] in swap_tup:
-                        arg.insert(argument_num + word_num, word[:-1])
-                        word_num += 1
-                        if word[:-1] == ".":
-                            arg.insert(argument_num + word_num, "_period")
-                        else:
-                            arg.insert(argument_num + word_num, "_comma")
-                        word_num += 1
-                    else:
-                        arg.insert(argument_num + word_num, word)
-                        word_num += 1
     outfile = "out.wav"
     error_flag = True
     options = []
     pl = 0
-    if len(arg) < 1 or arg[-1] == "--help" or arg[-1] == "-h":
+    if len(arg) < 1 or "--help" in arg or "-h" in arg:
         print("Half life vox generator\n")
         print('usage: python3 hl_vox_gen [option(s)] ["file_name[s]"] [option(s)]')
         print("supported optins [default in brackets]:")
@@ -198,32 +180,51 @@ def main():
                     offset += 2
                     if pl == 2:
                         outfile = "n/a"
-            else:
-                for letternum in range(len(arg[argnum])):
-                    if arg[argnum][letternum] == "(":
-                        if letternum == 0:
-                            temp, cut = find_end(arg, argnum, 0)
-                            control += [[temp, True, argnum - offset]]
-                            if cut == argnum:
-                                new_arg.pop(argnum - offset)
-                                offset += 1
+        offset = 0
+        tmp_arg = []
+        for argument in new_arg:
+            if len(argument) > 2 and " " in argument:
+                sentence = argument.split(" ")
+                for word in sentence:
+                    if word != "":
+                        if word[-1] in swap_tup:
+                            tmp_arg += [word[:-1]]
+                            if word[:-1] == ".":
+                                tmp_arg += ["_period"]
                             else:
-                                for i in range(cut):
-                                    new_arg.pop(argnum + i - offset)
-                                    offset += 1
+                                tmp_arg += ["_comma"]
                         else:
-                            if new_arg[argnum - offset][-1] == ")":
-                                temp = new_arg[argnum - offset][letternum:]
-                                cut = 1
-                            else:
-                                temp, cut = find_end(arg, argnum, letternum)
-                            new_arg[argnum - offset] = new_arg[argnum - offset][:letternum]
-                            control += [[temp, False, argnum - offset]]
-                            #print(cut)
-                            for j in range(cut - 1):
-                                new_arg.pop(argnum + j - offset + 1)
+                            tmp_arg += [word]
+                if tmp_arg:
+                    break
+        new_arg = []
+        new_arg.extend(tmp_arg)
+        for argnum in range(len(tmp_arg)):
+            for letternum in range(len(tmp_arg[argnum])):
+                if tmp_arg[argnum][letternum] == "(":
+                    if letternum == 0:
+                        temp, cut = find_end(tmp_arg, argnum, 0)
+                        control += [[temp, True, argnum - offset]]
+                        if cut == argnum:
+                            new_arg.pop(argnum - offset)
+                            offset += 1
+                        else:
+                            for i in range(cut):
+                                new_arg.pop(argnum + i - offset)
                                 offset += 1
-                        break
+                    else:
+                        if new_arg[argnum - offset][-1] == ")":
+                            temp = new_arg[argnum - offset][letternum:]
+                            cut = 1
+                        else:
+                            temp, cut = find_end(tmp_arg, argnum, letternum)
+                        new_arg[argnum - offset] = new_arg[argnum - offset][:letternum]
+                        control += [[temp, False, argnum - offset]]
+                        #print(cut)
+                        for j in range(cut - 1):
+                            new_arg.pop(argnum + j - offset + 1)
+                            offset += 1
+                    break
         if error_flag:
             os.chdir(vox_dir)
             vox_words = os.listdir()
