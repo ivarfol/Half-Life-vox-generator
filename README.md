@@ -35,5 +35,4 @@ differently to the following two
 
 for more information visit [this article](https://twhl.info/wiki/page/sentences.txt)
 ### todo
-swap ```,``` and ```.``` at the end of a word for _comma and _period
 get more precise values for pitch
