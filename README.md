@@ -30,9 +30,10 @@ and time compression from (t0) to (t100) default is (t0)
 
 the above options can be ether appended to a word ```test(p90)``` to 
 only change the word, or used separetly to change all words after the option:
-for more information visit [this article](https://twhl.info/wiki/page/sentences.txt)
 ```test (p95) test test``` in this example the first ```test``` will sound
 differently to the following two
+
+for more information visit [this article](https://twhl.info/wiki/page/sentences.txt)
 ### todo
 swap ```,``` and ```.``` at the end of a word for _comma and _period
 get more precise values for pitch
