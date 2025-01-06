@@ -145,7 +145,6 @@ def main():
                 if word != "":
                     arg.insert(argument_num + word_num, word)
                     word_num += 1
-    print(arg)
     outfile = "out.wav"
     error_flag = True
     options = []
