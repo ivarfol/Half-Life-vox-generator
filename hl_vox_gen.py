@@ -188,7 +188,7 @@ def main():
                 if word != "":
                     if word[-1] in swap_tup:
                         tmp_arg += [word[:-1]]
-                        if word[:-1] == ".":
+                        if word[-1] == ".":
                             tmp_arg += ["_period"]
                         else:
                             tmp_arg += ["_comma"]
