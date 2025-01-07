@@ -138,7 +138,6 @@ def main():
     arg = sys.argv[1:]
     swap_tup = (".", ",")
     outfile = "out.wav"
-    error_flag = True
     options = []
     pl = 0
     if len(arg) < 1 or "--help" in arg or "-h" in arg:
@@ -151,95 +150,95 @@ def main():
             print("-p play file after generating if 0, only generate if one")
             print("only play if 2 [0]")
         print("-h or --help print this message and exit")
-    else:
-        new_arg = []
-        control = []
-        new_arg.extend(arg)
-        offset = 0
-        for argnum in range(len(arg)):
-            if arg[argnum][0] == "-":
-                if arg[argnum] == "-o":
-                    outfile = arg[argnum + 1]
-                    new_arg.pop(argnum - offset)
-                    new_arg.pop(argnum - offset)
-                    offset += 2
-                elif arg[argnum] == "-v":
-                    if not arg[argnum + 1] in os.listdir():
-                        print(arg[argnum + 1], "is not a directory")
-                        error_flag = False
-                        break
-                    else:
-                        vox_dir = "./" + arg[argnum + 1]
-                        new_arg.pop(argnum - offset)
-                        new_arg.pop(argnum - offset)
-                        offset += 2
-                elif arg[argnum] == "-p" and syst != "Windows":
-                    pl = int(arg[argnum + 1])
-                    new_arg.pop(argnum - offset)
-                    new_arg.pop(argnum - offset)
-                    offset += 2
-                    if pl == 2:
-                        outfile = "n/a"
-        offset = 0
-        tmp_arg = []
-        for argument in new_arg:
-            sentence = argument.split(" ")
-            for word in sentence:
-                if word != "":
-                    if word[-1] in swap_tup:
-                        tmp_arg += [word[:-1]]
-                        if word[-1] == ".":
-                            tmp_arg += ["_period"]
-                        else:
-                            tmp_arg += ["_comma"]
-                    else:
-                        tmp_arg += [word]
-            if tmp_arg:
-                break
-        new_arg = []
-        new_arg.extend(tmp_arg)
-        for argnum in range(len(tmp_arg)):
-            for letternum in range(len(tmp_arg[argnum])):
-                if tmp_arg[argnum][letternum] == "(":
-                    if letternum == 0:
-                        temp, cut = find_end(tmp_arg, argnum, 0)
-                        control += [[temp, True, argnum - offset]]
-                        if cut == argnum:
-                            new_arg.pop(argnum - offset)
-                            offset += 1
-                        else:
-                            for i in range(cut):
-                                new_arg.pop(argnum + i - offset)
-                                offset += 1
-                    else:
-                        if new_arg[argnum - offset][-1] == ")":
-                            temp = new_arg[argnum - offset][letternum:]
-                            cut = 1
-                        else:
-                            temp, cut = find_end(tmp_arg, argnum, letternum)
-                        new_arg[argnum - offset] = new_arg[argnum - offset][:letternum]
-                        control += [[temp, False, argnum - offset]]
-                        #print(cut)
-                        for j in range(cut - 1):
-                            new_arg.pop(argnum + j - offset + 1)
-                            offset += 1
-                    break
-        if error_flag:
-            os.chdir(vox_dir)
-            vox_words = os.listdir()
-            arg_new = []
-            for argument in new_arg:
-                argument += ".wav"
-                if argument in vox_words:
-                    arg_new += [argument]
+        sys.exit(0)
+    new_arg = []
+    control = []
+    new_arg.extend(arg)
+    offset = 0
+    for argnum in range(len(arg)):
+        if arg[argnum][0] == "-":
+            if arg[argnum] == "-o":
+                outfile = arg[argnum + 1]
+                new_arg.pop(argnum - offset)
+                new_arg.pop(argnum - offset)
+                offset += 2
+            elif arg[argnum] == "-v":
+                if not arg[argnum + 1] in os.listdir():
+                    print(arg[argnum + 1], "is not a directory")
+                    sys.exit(0)
                 else:
-                    print(f"invalid argument {argument} does not exist")
-                    error_flag = False
-                    break
-            print("arguments: " + "".join(word + " " for word in arg_new) + f"\ncontrol: {control}\noutput file: {outfile}\nvoxdir: {vox_dir[2:]}")
-            if error_flag:
-                out_gen(arg_new, outfile, cwd, pl, control, syst)
-                print("Success")
+                    vox_dir = "./" + arg[argnum + 1]
+                    new_arg.pop(argnum - offset)
+                    new_arg.pop(argnum - offset)
+                    offset += 2
+            elif arg[argnum] == "-p" and syst != "Windows":
+                pl = int(arg[argnum + 1])
+                new_arg.pop(argnum - offset)
+                new_arg.pop(argnum - offset)
+                offset += 2
+                if pl == 2:
+                    outfile = "n/a"
+    offset = 0
+    tmp_arg = []
+    for argument in new_arg:
+        sentence = argument.split(" ")
+        for word in sentence:
+            if word != "":
+                if word[-1] in swap_tup:
+                    tmp_arg += [word[:-1]]
+                    if word[-1] == ".":
+                        tmp_arg += ["_period"]
+                    else:
+                        tmp_arg += ["_comma"]
+                else:
+                    tmp_arg += [word]
+        if tmp_arg:
+            break
+    new_arg = []
+    new_arg.extend(tmp_arg)
+    for argnum in range(len(tmp_arg)):
+        flag = False
+        for letternum in range(len(tmp_arg[argnum])):
+            if tmp_arg[argnum][letternum] == "(":
+                if letternum == 0:
+                    temp, cut = find_end(tmp_arg, argnum, 0)
+                    control += [[temp, True, argnum - offset]]
+                    if cut == argnum:
+                        new_arg.pop(argnum - offset)
+                        offset += 1
+                    else:
+                        for i in range(cut):
+                            new_arg.pop(argnum + i - offset)
+                            offset += 1
+                else:
+                    if new_arg[argnum - offset][-1] == ")":
+                        temp = new_arg[argnum - offset][letternum:]
+                        cut = 1
+                    else:
+                        temp, cut = find_end(tmp_arg, argnum, letternum)
+                    new_arg[argnum - offset] = new_arg[argnum - offset][:letternum]
+                    control += [[temp, False, argnum - offset]]
+                    #print(cut)
+                    for j in range(cut - 1):
+                        new_arg.pop(argnum + j - offset + 1)
+                        offset += 1
+                flag = True
+                break
+            if flag:
+                break
+    os.chdir(vox_dir)
+    vox_words = os.listdir()
+    arg_new = []
+    for argument in new_arg:
+        argument += ".wav"
+        if argument in vox_words:
+            arg_new += [argument]
+        else:
+            print(f"invalid argument {argument} does not exist")
+            sys.exit(0)
+    print("arguments: " + "".join(word + " " for word in arg_new) + f"\ncontrol: {control}\noutput file: {outfile}\nvoxdir: {vox_dir[2:]}")
+    out_gen(arg_new, outfile, cwd, pl, control, syst)
+    print("Success")
 
 if __name__ == "__main__":
     main()
