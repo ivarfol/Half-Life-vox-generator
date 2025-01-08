@@ -46,4 +46,5 @@ is the same as ```python3 hl_vox_gen.py 'hgrunt/(t20) clik squad!, neutralize!(e
 you will find the sentence name at the start of each sentence in sentences.txt  
 when using this feature on linux you will have to use ```''``` instead of ```""``` as the ```!``` will cause an error  
 ### todo
-get more precise values for pitch  
+get more precise values for pitch (need to change numbers in postcontrol() function)  
+add docstrings
