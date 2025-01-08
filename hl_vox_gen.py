@@ -185,9 +185,19 @@ def main():
             print("No arguments!")
         sys.exit(0)
     offset = 0
+    new_arg = new_arg[0].split(" ")
+    if new_arg[0][0] == "!":
+        line_name = new_arg[0][1:]
+        with open("sentences.txt", "r") as file:
+            for line in file:
+                if line.strip().split(" ")[0] == line_name:
+                    new_arg = line.strip().split(" ")[1:] + new_arg[1:]
+                    break
+    if "/" in new_arg[0]:
+        vox_dir = "./" + new_arg[0].split("/")[0]
+        new_arg = [new_arg[0].split("/")[1]] + new_arg[1:]
     tmp_arg = []
-    sentence = new_arg[0].split(" ")
-    for word in sentence:
+    for word in new_arg:
         if word != "":
             if word[-1] in swap_tup:
                 tmp_arg += [word[:-1]]
@@ -198,16 +208,6 @@ def main():
             else:
                 tmp_arg += [word]
     new_arg = []
-    if tmp_arg[0][0] == "!":
-        line_name = tmp_arg[0][1:]
-        with open("sentences.txt", "r") as file:
-            for line in file:
-                if line.strip().split(" ")[0] == line_name:
-                    tmp_arg = line.strip().split(" ")[1:] + tmp_arg[1:]
-                    break
-    if "/" in tmp_arg[0]:
-        vox_dir = "./" + tmp_arg[0].split("/")[0]
-        tmp_arg = [tmp_arg[0].split("/")[1]] + tmp_arg[1:]
     new_arg.extend(tmp_arg)
     for argnum in range(len(tmp_arg)):
         flag = False
