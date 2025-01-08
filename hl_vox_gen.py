@@ -191,6 +191,10 @@ def main():
         with open("sentences.txt", "r") as file:
             for line in file:
                 if line.strip().split(" ")[0] == line_name:
+                    sentence_output = line.strip()
+                    for add_word in new_arg[1:]:
+                        sentence_output += " " + add_word
+                    print(sentence_output)
                     new_arg = line.strip().split(" ")[1:] + new_arg[1:]
                     break
     if "/" in new_arg[0]:
