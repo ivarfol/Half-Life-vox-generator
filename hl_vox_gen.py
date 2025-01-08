@@ -178,22 +178,25 @@ def main():
                 offset += 2
                 if pl == 2:
                     outfile = "n/a"
+    if len(new_arg) != 1:
+        if len(new_arg) > 1:
+            print("Too many arguments!")
+        else:
+            print("No arguments!")
+        sys.exit(0)
     offset = 0
     tmp_arg = []
-    for argument in new_arg:
-        sentence = argument.split(" ")
-        for word in sentence:
-            if word != "":
-                if word[-1] in swap_tup:
-                    tmp_arg += [word[:-1]]
-                    if word[-1] == ".":
-                        tmp_arg += ["_period"]
-                    else:
-                        tmp_arg += ["_comma"]
+    sentence = new_arg[0].split(" ")
+    for word in sentence:
+        if word != "":
+            if word[-1] in swap_tup:
+                tmp_arg += [word[:-1]]
+                if word[-1] == ".":
+                    tmp_arg += ["_period"]
                 else:
-                    tmp_arg += [word]
-        if tmp_arg:
-            break
+                    tmp_arg += ["_comma"]
+            else:
+                tmp_arg += [word]
     new_arg = []
     new_arg.extend(tmp_arg)
     for argnum in range(len(tmp_arg)):
