@@ -184,15 +184,19 @@ def main():
     new_arg = new_arg[0].split(" ")
     if new_arg[0][0] == "!":
         line_name = new_arg[0][1:]
-        with open("sentences.txt", "r") as file:
-            for line in file:
-                if line.strip().split(" ")[0] == line_name:
-                    sentence_output = line.strip()
-                    for add_word in new_arg[1:]:
-                        sentence_output += " " + add_word
-                    print(sentence_output)
-                    new_arg = line.strip().split(" ")[1:] + new_arg[1:]
-                    break
+        try:
+            with open("sentences.txt", "r") as file:
+                for line in file:
+                    if line.strip().split(" ")[0] == line_name:
+                        sentence_output = line.strip()
+                        for add_word in new_arg[1:]:
+                            sentence_output += " " + add_word
+                        print(sentence_output)
+                        new_arg = line.strip().split(" ")[1:] + new_arg[1:]
+                        break
+        except:
+            print("No sentence called", line_name)
+            sys.exit(0)
     if "/" in new_arg[0]:
         vox_dir = new_arg[0].split("/")[0]
         new_arg = [new_arg[0].split("/")[1]] + new_arg[1:]
