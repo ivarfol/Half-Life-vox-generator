@@ -199,7 +199,12 @@ def main():
                 tmp_arg += [word]
     new_arg = []
     if tmp_arg[0][0] == "!":
-        pass
+        line_name = tmp_arg[0][1:]
+        with open("sentences.txt", "r") as file:
+            for line in file:
+                if line.strip().split(" ")[0] == line_name:
+                    tmp_arg = line.strip().split(" ")[1:] + tmp_arg[1:]
+                    break
     if "/" in tmp_arg[0]:
         vox_dir = "./" + tmp_arg[0].split("/")[0]
         tmp_arg = [tmp_arg[0].split("/")[1]] + tmp_arg[1:]
