@@ -1,7 +1,7 @@
 # Half-Life-vox-generator
 This is a program for joining and manipulating half life audio files  
-You will need Half-Life 1 installed with steam, or you will have to modify the path at the beggining of the main
-to point to your Half-Life sound directory
+You will need Half-Life 1 installed with steam, or you will have to modify the path at the beggining of the main  
+to point to your Half-Life sound director  
 You will need pydub library installed  
 ## Usage
 python3 hl\_vox\_gen.py \[option(s)\] \["sentence"\] \[option(s)\]  
@@ -43,7 +43,7 @@ now you can specify vox directory like in sentences.txt, example: ```python3 hl_
 is the same as ```python3 hl_vox_gen.py -v hgrunt 'freeman!'```  
 now you can pass the sentence name instead of the whole sentence ```python3 hl_vox_gen.py '!HG_ALERT5'```  
 is the same as ```python3 hl_vox_gen.py 'hgrunt/(t20) clik squad!, neutralize!(e90) freeman! clik'```  
-you will find the sentence name at the start of each sentence in sentences.txt
+you will find the sentence name at the start of each sentence in sentences.txt  
 when using this feature on linux you will have to use ```''``` instead of ```""``` as the ```!``` will cause an error  
 ### todo
 get more precise values for pitch  
