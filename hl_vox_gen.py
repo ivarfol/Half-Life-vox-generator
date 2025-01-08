@@ -249,7 +249,7 @@ def main():
         else:
             print(f"invalid argument {argument} does not exist")
             sys.exit(0)
-    print("arguments: " + "".join(word + " " for word in arg_new) + f"\ncontrol: {control}\noutput file: {outfile}\nvoxdir: {vox_dir[2:]}")
+    print("arguments: " + "".join(word + " " for word in arg_new) + f"\ncontrol: {control}\noutput file: {outfile}\nvoxdir: {vox_dir}")
     out_gen(arg_new, outfile, cwd, pl, control, syst)
     print("Success")
 
