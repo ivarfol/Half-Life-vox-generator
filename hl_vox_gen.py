@@ -163,14 +163,10 @@ def main():
                 new_arg.pop(argnum - offset)
                 offset += 2
             elif arg[argnum] == "-v":
-                if not arg[argnum + 1] in os.listdir():
-                    print(arg[argnum + 1], "is not a directory")
-                    sys.exit(0)
-                else:
-                    vox_dir = "./" + arg[argnum + 1]
-                    new_arg.pop(argnum - offset)
-                    new_arg.pop(argnum - offset)
-                    offset += 2
+                vox_dir = arg[argnum + 1]
+                new_arg.pop(argnum - offset)
+                new_arg.pop(argnum - offset)
+                offset += 2
             elif arg[argnum] == "-p" and syst != "Windows":
                 pl = int(arg[argnum + 1])
                 new_arg.pop(argnum - offset)
@@ -198,7 +194,7 @@ def main():
                     new_arg = line.strip().split(" ")[1:] + new_arg[1:]
                     break
     if "/" in new_arg[0]:
-        vox_dir = "./" + new_arg[0].split("/")[0]
+        vox_dir = new_arg[0].split("/")[0]
         new_arg = [new_arg[0].split("/")[1]] + new_arg[1:]
     tmp_arg = []
     for word in new_arg:
@@ -243,7 +239,7 @@ def main():
                 break
             if flag:
                 break
-    os.chdir(vox_dir)
+    os.chdir(os.path.expanduser(vox_dir))
     vox_words = os.listdir()
     arg_new = []
     for argument in new_arg:
