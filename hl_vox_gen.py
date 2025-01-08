@@ -198,6 +198,11 @@ def main():
             else:
                 tmp_arg += [word]
     new_arg = []
+    if tmp_arg[0][0] == "!":
+        pass
+    if "/" in tmp_arg[0]:
+        vox_dir = "./" + tmp_arg[0].split("/")[0]
+        tmp_arg = [tmp_arg[0].split("/")[1]] + tmp_arg[1:]
     new_arg.extend(tmp_arg)
     for argnum in range(len(tmp_arg)):
         flag = False
