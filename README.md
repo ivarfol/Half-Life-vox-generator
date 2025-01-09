@@ -2,6 +2,11 @@
 This is a program for joining and manipulating half life audio files  
 You will need Half-Life 1 installed with steam, or you will have to modify the path at the beggining of the main  
 to point to your Half-Life sound directory, and comment out line 372 ```os.chdir(game_dir+"/sound")```  
+  
+alternatively you can create a directory ```valve``` and put your sound directory there  
+and chenge the path in main() to point to the directory where valve is located,  
+when using this method you can also create ```bshift``` and ```gearbox``` directories  
+in the same directory as ```valve``` and put corresponding sound directories them  
 [link to a repo with sound files](https://github.com/sourcesounds/hl1)  
 You will need pydub library installed  
 ## Usage
