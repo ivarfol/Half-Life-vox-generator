@@ -1,5 +1,4 @@
-import sys
-import os
+import sys, os
 from platform import system
 from pydub import AudioSegment
 from math import log
