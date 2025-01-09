@@ -130,10 +130,14 @@ def out_gen(infiles, outfile, cwd, pl, control, syst):
 def main():
     syst = system()
     cwd = os.getcwd()
-    if syst == "Windows":
-        os.chdir("C:\\Program Files (x86)\\Steam\\steamapps\\common\\Half-Life\\valve\\sound")
-    else:
-        os.chdir(os.path.expanduser("~/.local/share/Steam/steamapps/common/Half-Life/valve/sound/"))
+    try:
+        if syst == "Windows":
+            os.chdir("C:\\Program Files (x86)\\Steam\\steamapps\\common\\Half-Life\\valve\\sound")
+        else:
+            os.chdir(os.path.expanduser("~/.local/share/Steam/steamapps/common/Half-Life/valve/sound/"))
+    except:
+        print("Looks like you dont have Half-Life 1 installed with steam, ether install it with steam, or\n change the os.chdir at the beggining of main to your Half-Life/sound directory")
+        sys.exit(0)
     vox_dir = "./vox"
     arg = sys.argv[1:]
     swap_tup = (".", ",")
