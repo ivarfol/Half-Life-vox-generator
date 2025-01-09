@@ -150,6 +150,10 @@ def postcontrol(infile, control_arr, prim_vox_dir, fallback_dir):
         name of the input file
     control_arr : list
         list of control var values
+    prim_vox_dir : str
+        path to primary vox directory
+    fallback_dir : str
+        path to fallback directory
 
     Returns
     -------
@@ -200,6 +204,10 @@ def word_sound(control, ctrl_dict, filenum, infiles, control_arr, prim_vox_dir, 
         list of words in the sentence
     control_arr : list
         list of control var values
+    prim_vox_dir : str
+        path to primary vox directory
+    fallback_dir : str
+        path to fallback directory
 
     Returns
     -------
@@ -260,6 +268,10 @@ def out_gen(infiles, outfile, cwd, pl, control, syst, fallback_dir):
         control string in (), word num and tmp flag
     syst : str
         system name
+    prim_vox_dir : str
+        path to primary vox directory
+    fallback_dir : str
+        path to fallback directory
     '''
     prim_vox_dir = os.getcwd()
     ctrl_dict = control_dict(control)
