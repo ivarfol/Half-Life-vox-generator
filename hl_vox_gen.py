@@ -263,7 +263,11 @@ def out_gen(infiles, outfile, cwd, pl, control, syst):
     if pl != 2:
         sound.export(outfile, format="wav")
     if pl != 1 and syst != "Windows":
-        play(sound)
+        try:
+            play(sound)
+        except:
+            print("Looks like you don't have ffmpeg installed, but it is required for playback\nif you did not pass '-p 2' option the file has been generated\nif you don't want to install ffmpeg\nto disable this messege, change 'pl' variable value in the main() to 1")
+            sys.exit(0)
 
 def main():
     syst = system()
