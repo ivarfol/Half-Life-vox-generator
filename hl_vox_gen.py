@@ -304,6 +304,7 @@ def main():
         print("supported optins [default in brackets]:")
         print("-v use different directory for .wav files [vox]")
         print("-o specify the name of the output file [out.wav]")
+        print("--game specify the game: gearbox, bshift or valve [valve]")
         if syst != "Windows":
             print("--play play file after generating if 0, only generate if 'gn'")
             print("only play if 'pl' [0]")
