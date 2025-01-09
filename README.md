@@ -49,5 +49,6 @@ you will find the sentence name at the start of each sentence in sentences.txt
 when using this feature on linux you will have to use ```''``` instead of ```""``` as the ```!``` will cause an error  
 you can now use --game option to use voicelines from opposing force (--game gearbox) or blue shift (--game bshift)  
 the voice lines from the original game will still be accesible if the vox directory with the same name exists  
+example: ```python3 hl_vox_gen.py 'otis/reputation beer' -o reputation.wav --game gearbox```  
 ### todo
 get more precise values for pitch (need to change numbers in postcontrol() function)  
