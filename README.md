@@ -2,7 +2,7 @@
 This is a program for joining and manipulating half life audio files  
 You will need Half-Life 1 installed with steam, or you will have to modify the path at the beggining of the main  
 to point to your Half-Life sound directory  
-[link to a repo with sound files](https://github.com/sourcesounds/hl1)
+[link to a repo with sound files](https://github.com/sourcesounds/hl1)  
 You will need pydub library installed  
 ## Usage
 python3 hl\_vox\_gen.py \[option(s)\] \["sentence"\] \[option(s)\]  
