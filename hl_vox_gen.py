@@ -168,8 +168,8 @@ def postcontrol(infile, control_arr, prim_vox_dir, fallback_dir):
             sound = AudioSegment.from_wav(infile)
             os.chdir(prim_vox_dir)
         except:
-            print("argument does not exist in primary, or fallback dir")
-            sys.exit(0)
+            print("argument", infile[:-4], "does not exist in primary, or fallback dir")
+            sys.exit(1)
     if control_arr[0] != 100:
         sound = sound[:control_arr[0] - 100]
     if control_arr[2] != 0:
@@ -289,7 +289,7 @@ def out_gen(infiles, outfile, cwd, pl, control, syst, fallback_dir):
             play(sound)
         except:
             print("Looks like you don't have ffmpeg installed, but it is required for playback\nif you did not pass '-p 2' option the file has been generated\nif you don't want to install ffmpeg\nto disable this messege, change 'pl' variable value in the main() to 'gn'")
-            sys.exit(0)
+            sys.exit(1)
 
 def main():
     syst = system()
@@ -302,7 +302,7 @@ def main():
         hl_dir = os.getcwd()
     except:
         print("Looks like you dont have Half-Life 1 installed with steam, ether install it with steam, or\n change the os.chdir at the beggining of main to your Half-Life/valve/sound directory")
-        sys.exit(0)
+        sys.exit(1)
     game_dir = "valve"
     vox_dir = "./vox"
     arg = sys.argv[1:]
@@ -333,7 +333,7 @@ def main():
                     outfile = arg[argnum + 1]
                 else:
                     print("No file specified after -o option")
-                    sys.exit(0)
+                    sys.exit(1)
                 new_arg.pop(argnum - offset)
                 new_arg.pop(argnum - offset)
                 offset += 2
@@ -342,7 +342,7 @@ def main():
                     vox_dir = arg[argnum + 1]
                 else:
                     print("No path after -v option")
-                    sys.exit(0)
+                    sys.exit(1)
                 new_arg.pop(argnum - offset)
                 new_arg.pop(argnum - offset)
                 offset += 2
@@ -351,10 +351,10 @@ def main():
                     pl = arg[argnum + 1]
                 else:
                     print("No arguments after --play option")
-                    sys.exit(0)
+                    sys.exit(1)
                 if not pl in ("pl", "both", "gn"):
                     print(pl, "is not a valid play option")
-                    sys.exit(0)
+                    sys.exit(1)
                 new_arg.pop(argnum - offset)
                 new_arg.pop(argnum - offset)
                 offset += 2
@@ -365,21 +365,21 @@ def main():
                     game_dir = arg[argnum + 1]
                 else:
                     print("No game specified after --game option")
-                    sys.exit()
+                    sys.exit(1)
                 if os.path.isdir(hl_dir + "/bshift") and game_dir == "bshift" or os.path.isdir(hl_dir + "/gearbox") and game_dir == "gearbox" or game_dir == "valve":
                     new_arg.pop(argnum - offset)
                     new_arg.pop(argnum - offset)
                     offset += 2
                 else:
                     print(game_dir, "is not a valid game")
-                    sys.exit(0)
+                    sys.exit(1)
     os.chdir(game_dir+"/sound")
     if len(new_arg) != 1:
         if len(new_arg) > 1:
             print("Too many arguments!")
         else:
             print("No arguments!")
-        sys.exit(0)
+        sys.exit(1)
     offset = 0
     new_arg = new_arg[0].split(" ")
     if new_arg[0][0] == "!":
@@ -396,7 +396,7 @@ def main():
                         break
         except:
             print("No sentence called", line_name)
-            sys.exit(0)
+            sys.exit(1)
     if "/" in new_arg[0]:
         vox_dir = new_arg[0].split("/")[0]
         new_arg = [new_arg[0].split("/")[1]] + new_arg[1:]
@@ -447,7 +447,7 @@ def main():
         os.chdir(os.path.expanduser(vox_dir))
     except:
         print(vox_dir, "is not a valid vox dir")
-        sys.exit(0)
+        sys.exit(1)
     vox_words = os.listdir()
     fallback_dir = hl_dir + "/valve/sound/" + vox_dir
     if not os.path.isdir(fallback_dir):
@@ -461,8 +461,8 @@ def main():
         elif argument.lower() in vox_words or argument.lower() in fallback_vox_words:
             arg_new += [argument.lower()]
         else:
-            print(f"invalid argument {argument} does not exist")
-            sys.exit(0)
+            print("invalid argument", argument, "does not exist")
+            sys.exit(1)
     print("arguments: " + "".join(word + " " for word in arg_new) + f"\ncontrol: {control}\noutput file: {outfile}\nvoxdir: {vox_dir}")
     out_gen(arg_new, outfile, cwd, pl, control, syst, fallback_dir)
     print("Success")
