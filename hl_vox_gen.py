@@ -163,13 +163,9 @@ def postcontrol(infile, control_arr, prim_vox_dir, fallback_dir):
     try:
         sound = AudioSegment.from_wav(infile) # cut end, 100 = 0.1s
     except:
-        try:
-            os.chdir(fallback_dir)
-            sound = AudioSegment.from_wav(infile)
-            os.chdir(prim_vox_dir)
-        except:
-            print("argument", infile[:-4], "does not exist in primary, or fallback dir")
-            sys.exit(1)
+        os.chdir(fallback_dir)
+        sound = AudioSegment.from_wav(infile)
+        os.chdir(prim_vox_dir)
     if control_arr[0] != 100:
         sound = sound[:control_arr[0] - 100]
     if control_arr[2] != 0:
@@ -329,7 +325,7 @@ def main():
     for argnum in range(len(arg)):
         if arg[argnum][0] == "-":
             if arg[argnum] == "-o":
-                if len(arg) < argnum + 1:
+                if len(arg) > argnum + 1:
                     outfile = arg[argnum + 1]
                 else:
                     print("No file specified after -o option")
@@ -338,7 +334,7 @@ def main():
                 new_arg.pop(argnum - offset)
                 offset += 2
             elif arg[argnum] == "-v":
-                if len(arg) < argnum + 1:
+                if len(arg) > argnum + 1:
                     vox_dir = arg[argnum + 1]
                 else:
                     print("No path after -v option")
@@ -347,7 +343,7 @@ def main():
                 new_arg.pop(argnum - offset)
                 offset += 2
             elif arg[argnum] == "--play" and syst != "Windows":
-                if len(arg) < argnum + 1:
+                if len(arg) > argnum + 1:
                     pl = arg[argnum + 1]
                 else:
                     print("No arguments after --play option")
@@ -361,7 +357,7 @@ def main():
                 if pl == "pl":
                     outfile = "n/a"
             elif arg[argnum] == "--game":
-                if len(arg) < argnum + 1:
+                if len(arg) > argnum + 1:
                     game_dir = arg[argnum + 1]
                 else:
                     print("No game specified after --game option")
