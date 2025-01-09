@@ -7,6 +7,26 @@ if system() != "Windows":
     from pydub.playback import play
 
 def find_end(arg, argnum, letternum):
+    '''
+    find_end
+    finds the second ) in the sentence
+
+    Parameters
+    ----------
+    arg : list
+        the sentence as a list
+    argnum : int
+        word number in the sentence
+    letternum : int
+        letter number where the ( is at
+
+    Returns
+    -------
+    out : str
+        the words that were in ()
+    len(out.split()) : int
+        number of words in ()
+    '''
     out = arg[argnum][letternum:]
     for argnum_new in range(argnum, len(arg)):
         if argnum_new != argnum:
@@ -16,6 +36,20 @@ def find_end(arg, argnum, letternum):
     return(out, len(out.split()))
 
 def get_control(control):
+    '''
+    get_control
+    returs list of lists with control letter and value
+
+    Parameters
+    ----------
+    control : list
+        control string in (), word num and tmp flag
+
+    Returns
+    -------
+    out : list
+        control letter and value
+    '''
     out = []
     tmp = control[0].split(" ")
     tmp[0] = tmp[0][1:]
@@ -25,6 +59,21 @@ def get_control(control):
     return(out)
 
 def control_dict(control):
+    '''
+    control_dict
+    generates dictionary for control vars
+
+    Parameters
+    ----------
+    control : list
+        control string in (), word num and tmp flag
+
+    Returns
+    -------
+    ctrl_dict : dict
+        dictionary where key is word number, and value is list
+        or int of control value numbers
+    '''
     ctrl_dict = {}
     for controlnum in range(len(control)):
         if control[controlnum][2] in ctrl_dict:
@@ -35,6 +84,20 @@ def control_dict(control):
     return(ctrl_dict)
 
 def gen_control_arr(ctrl, control_arr):
+    '''
+    gen_control_arr
+    generates control array
+
+    Parameters
+    ----------
+    ctrl : list
+        control letter and value
+
+    Returns
+    -------
+    control_arr : list
+        list of control var values
+    '''
     #print("ctrl:", ctrl)
     for contr_var in ctrl:
         if contr_var[0] == "e":
@@ -51,6 +114,22 @@ def gen_control_arr(ctrl, control_arr):
     return(control_arr)
 
 def timecompress(time_pr, sound):
+    '''
+    timecompress
+    time comression like in gold source
+
+    Parameters
+    ----------
+    time_pr : int
+       compression ratio in %
+    sound : AudioSegment
+        audio to be comressed
+
+    Returns
+    -------
+    new_sound : AudioSegment
+        comressed audio
+    '''
     length = len(sound)
     step = length / 8
     cut_pr = step / 100 * time_pr
@@ -62,6 +141,22 @@ def timecompress(time_pr, sound):
     return(new_sound)
 
 def postcontrol(infile, control_arr):
+    '''
+    postcontrol
+    manupulates audio according to control_arr
+
+    Parameters
+    ----------
+    infile : str
+        name of the input file
+    control_arr : list
+        list of control var values
+
+    Returns
+    -------
+    sound : AudioSegment
+        audio after the manipulations
+    '''
     sound = AudioSegment.from_wav(infile) # cut end, 100 = 0.1s
     if control_arr[0] != 100:
         sound = sound[:control_arr[0] - 100]
@@ -80,6 +175,31 @@ def postcontrol(infile, control_arr):
     return(sound)
 
 def word_sound(control, ctrl_dict, filenum, infiles, control_arr):
+    '''
+    word_sound
+    generates audio for a word
+
+    Parameters
+    ----------
+    control : list
+        control string in (), word num and tmp flag
+    ctrl_dict : dict
+        dictionary where key is word number, and value is list
+        or int of control value numbers
+    filenum : int
+        number of the word in the infiles
+    infiles : list
+        list of words in the sentence
+    control_arr : list
+        list of control var values
+
+    Returns
+    -------
+    postcontrol(infiles[filenum]) : AudioSegment
+        audio for the word
+    control_arr : list
+        list of control var values
+    '''
     tmp_control_arr = []
     temp = []
     if filenum in ctrl_dict.keys():
@@ -114,8 +234,27 @@ def word_sound(control, ctrl_dict, filenum, infiles, control_arr):
         return(postcontrol(infiles[filenum], control_arr), control_arr)
 
 def out_gen(infiles, outfile, cwd, pl, control, syst):
+    '''
+    out_gen
+    generates the audio, expeorts/plays it
+
+    Parameters
+    ----------
+    infiles : list
+        list of words in the sentence
+    outfile : str
+        name of the file to export the audio to
+    cwd : path
+        path to dir where the program was launched
+    pl : int
+        whether the file will be exported or player (-p option)
+    control : list
+        control string in (), word num and tmp flag
+    syst : str
+        system name
+    '''
     ctrl_dict = control_dict(control)
-    control_arr = [100, 0, 0, 100, 0] #epsvt
+    control_arr = [100, 0, 0, 100, 0] #end pitch start volume time
     sound, control_arr = word_sound(control, ctrl_dict, 0, infiles, control_arr)
     for filenum in range(1, len(infiles)):
         tmp = word_sound(control, ctrl_dict, filenum, infiles, control_arr)
