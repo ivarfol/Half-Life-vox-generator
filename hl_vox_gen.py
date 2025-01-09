@@ -329,17 +329,29 @@ def main():
     for argnum in range(len(arg)):
         if arg[argnum][0] == "-":
             if arg[argnum] == "-o":
-                outfile = arg[argnum + 1]
+                if len(arg) < argnum + 1:
+                    outfile = arg[argnum + 1]
+                else:
+                    print("No file specified after -o option")
+                    sys.exit(0)
                 new_arg.pop(argnum - offset)
                 new_arg.pop(argnum - offset)
                 offset += 2
             elif arg[argnum] == "-v":
-                vox_dir = arg[argnum + 1]
+                if len(arg) < argnum + 1:
+                    vox_dir = arg[argnum + 1]
+                else:
+                    print("No path after -v option")
+                    sys.exit(0)
                 new_arg.pop(argnum - offset)
                 new_arg.pop(argnum - offset)
                 offset += 2
             elif arg[argnum] == "--play" and syst != "Windows":
-                pl = arg[argnum + 1]
+                if len(arg) < argnum + 1:
+                    pl = arg[argnum + 1]
+                else:
+                    print("No arguments after --play option")
+                    sys.exit(0)
                 if not pl in ("pl", "both", "gn"):
                     print(pl, "is not a valid play option")
                     sys.exit(0)
@@ -349,7 +361,11 @@ def main():
                 if pl == "pl":
                     outfile = "n/a"
             elif arg[argnum] == "--game":
-                game_dir = arg[argnum + 1]
+                if len(arg) < argnum + 1:
+                    game_dir = arg[argnum + 1]
+                else:
+                    print("No game specified after --game option")
+                    sys.exit()
                 if os.path.isdir(hl_dir + "/bshift") and game_dir == "bshift" or os.path.isdir(hl_dir + "/gearbox") and game_dir == "gearbox" or game_dir == "valve":
                     new_arg.pop(argnum - offset)
                     new_arg.pop(argnum - offset)
