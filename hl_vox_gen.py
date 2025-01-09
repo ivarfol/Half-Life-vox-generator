@@ -340,6 +340,9 @@ def main():
                 offset += 2
             elif arg[argnum] == "--play" and syst != "Windows":
                 pl = arg[argnum + 1]
+                if not pl in ("pl", "both", "gn"):
+                    print(pl, "is not a valid play option")
+                    sys.exit(0)
                 new_arg.pop(argnum - offset)
                 new_arg.pop(argnum - offset)
                 offset += 2
@@ -347,9 +350,13 @@ def main():
                     outfile = "n/a"
             elif arg[argnum] == "--game":
                 game_dir = arg[argnum + 1]
-                new_arg.pop(argnum - offset)
-                new_arg.pop(argnum - offset)
-                offset += 2
+                if os.path.isdir(hl_dir + "/bshift") and game_dir == "bshift" or os.path.isdir(hl_dir + "/gearbox") and game_dir == "gearbox" or game_dir == "valve":
+                    new_arg.pop(argnum - offset)
+                    new_arg.pop(argnum - offset)
+                    offset += 2
+                else:
+                    print(game_dir, "is not a valid game")
+                    sys.exit(0)
     os.chdir(game_dir+"/sound")
     if len(new_arg) != 1:
         if len(new_arg) > 1:
@@ -420,7 +427,11 @@ def main():
                 break
             if flag:
                 break
-    os.chdir(os.path.expanduser(vox_dir))
+    try:
+        os.chdir(os.path.expanduser(vox_dir))
+    except:
+        print(vox_dir, "is not a valid vox dir")
+        sys.exit(0)
     vox_words = os.listdir()
     fallback_dir = hl_dir + "/valve/sound/" + vox_dir
     if not os.path.isdir(fallback_dir):
