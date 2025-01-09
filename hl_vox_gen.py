@@ -139,7 +139,7 @@ def timecompress(time_pr, sound):
         current_pos += step
     return(new_sound)
 
-def postcontrol(infile, control_arr):
+def postcontrol(infile, control_arr, prim_vox_dir, fallback_dir):
     '''
     postcontrol
     manupulates audio according to control_arr
@@ -156,7 +156,16 @@ def postcontrol(infile, control_arr):
     sound : AudioSegment
         audio after the manipulations
     '''
-    sound = AudioSegment.from_wav(infile) # cut end, 100 = 0.1s
+    try:
+        sound = AudioSegment.from_wav(infile) # cut end, 100 = 0.1s
+    except:
+        try:
+            os.chdir(fallback_dir)
+            sound = AudioSegment.from_wav(infile)
+            os.chdir(prim_vox_dir)
+        except:
+            print("argument does not exist in primary, or fallback dir")
+            sys.exit(0)
     if control_arr[0] != 100:
         sound = sound[:control_arr[0] - 100]
     if control_arr[2] != 0:
@@ -173,7 +182,7 @@ def postcontrol(infile, control_arr):
         sound = timecompress(control_arr[4], sound) # time compression
     return(sound)
 
-def word_sound(control, ctrl_dict, filenum, infiles, control_arr):
+def word_sound(control, ctrl_dict, filenum, infiles, control_arr, prim_vox_dir, fallback_dir):
     '''
     word_sound
     generates audio for a word
@@ -224,15 +233,15 @@ def word_sound(control, ctrl_dict, filenum, infiles, control_arr):
         if ctrlf:
             temp.extend(control_arr)
             tmp_control_arr = gen_control_arr(ctrlf, temp)
-            return(postcontrol(infiles[filenum], tmp_control_arr), control_arr)
+            return(postcontrol(infiles[filenum], tmp_control_arr, prim_vox_dir, fallback_dir), control_arr)
         else:
-            return(postcontrol(infiles[filenum], control_arr), control_arr)
+            return(postcontrol(infiles[filenum], control_arr, prim_vox_dir, fallback_dir), control_arr)
         #print("control:", control_arr)
         #print("tmp control:", tmp_control_arr)
     else:
-        return(postcontrol(infiles[filenum], control_arr), control_arr)
+        return(postcontrol(infiles[filenum], control_arr, prim_vox_dir, fallback_dir), control_arr)
 
-def out_gen(infiles, outfile, cwd, pl, control, syst):
+def out_gen(infiles, outfile, cwd, pl, control, syst, fallback_dir):
     '''
     out_gen
     generates the audio, expeorts/plays it
@@ -252,11 +261,12 @@ def out_gen(infiles, outfile, cwd, pl, control, syst):
     syst : str
         system name
     '''
+    prim_vox_dir = os.getcwd()
     ctrl_dict = control_dict(control)
     control_arr = [100, 0, 0, 100, 0] #end pitch start volume time
-    sound, control_arr = word_sound(control, ctrl_dict, 0, infiles, control_arr)
+    sound, control_arr = word_sound(control, ctrl_dict, 0, infiles, control_arr, prim_vox_dir, fallback_dir)
     for filenum in range(1, len(infiles)):
-        tmp = word_sound(control, ctrl_dict, filenum, infiles, control_arr)
+        tmp = word_sound(control, ctrl_dict, filenum, infiles, control_arr, prim_vox_dir, fallback_dir)
         sound += tmp[0]
         control_arr = tmp[1]
     os.chdir(cwd)
@@ -274,12 +284,14 @@ def main():
     cwd = os.getcwd()
     try:
         if syst == "Windows":
-            os.chdir("C:\\Program Files (x86)\\Steam\\steamapps\\common\\Half-Life\\valve\\sound")
+            os.chdir("C:\\Program Files (x86)\\Steam\\steamapps\\common\\Half-Life")
         else:
-            os.chdir(os.path.expanduser("~/.local/share/Steam/steamapps/common/Half-Life/valve/sound/"))
+            os.chdir(os.path.expanduser("~/.local/share/Steam/steamapps/common/Half-Life"))
+        hl_dir = os.getcwd()
     except:
         print("Looks like you dont have Half-Life 1 installed with steam, ether install it with steam, or\n change the os.chdir at the beggining of main to your Half-Life/valve/sound directory")
         sys.exit(0)
+    game_dir = "valve"
     vox_dir = "./vox"
     arg = sys.argv[1:]
     swap_tup = (".", ",")
@@ -320,6 +332,12 @@ def main():
                 offset += 2
                 if pl == 2:
                     outfile = "n/a"
+            elif arg[argnum] == "--game":
+                game_dir = arg[argnum + 1]
+                new_arg.pop(argnum - offset)
+                new_arg.pop(argnum - offset)
+                offset += 2
+    os.chdir(game_dir+"/sound")
     if len(new_arg) != 1:
         if len(new_arg) > 1:
             print("Too many arguments!")
@@ -331,7 +349,7 @@ def main():
     if new_arg[0][0] == "!":
         line_name = new_arg[0][1:]
         try:
-            with open("sentences.txt", "r") as file:
+            with open("sentences.txt", "r", encoding="cp1252") as file:
                 for line in file:
                     if line.strip().split(" ")[0] == line_name:
                         sentence_output = line.strip()
@@ -391,16 +409,22 @@ def main():
                 break
     os.chdir(os.path.expanduser(vox_dir))
     vox_words = os.listdir()
+    fallback_dir = hl_dir + "/valve/sound/" + vox_dir
+    if not os.path.isdir(fallback_dir):
+        fallback_dir = os.getcwd()
+    fallback_vox_words = os.listdir(fallback_dir)
     arg_new = []
     for argument in new_arg:
         argument += ".wav"
-        if argument in vox_words:
+        if argument in vox_words or argument in fallback_vox_words:
             arg_new += [argument]
+        elif argument.lower() in vox_words or argument.lower() in fallback_vox_words:
+            arg_new += [argument.lower()]
         else:
             print(f"invalid argument {argument} does not exist")
             sys.exit(0)
     print("arguments: " + "".join(word + " " for word in arg_new) + f"\ncontrol: {control}\noutput file: {outfile}\nvoxdir: {vox_dir}")
-    out_gen(arg_new, outfile, cwd, pl, control, syst)
+    out_gen(arg_new, outfile, cwd, pl, control, syst, fallback_dir)
     print("Success")
 
 if __name__ == "__main__":
