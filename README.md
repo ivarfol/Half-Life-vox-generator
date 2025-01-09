@@ -11,9 +11,9 @@ supported options \[default in brackets\]:
 -o specify output file name  
 -h or --help print help  
 
-if you are using linux you can also use -p option  
-to specify whether the file will be generated and played (-p 0 default),  
-generated only (-p 1), or played only (-p 2)  
+if you are using linux you can also use --play option  
+to specify whether the file will be generated and played (--play both default),  
+generated only (--play gn), or played only (--play pl)  
 
 an example:  
 ```python3 hl_vox_gen.py -o hello_world.wav "(p130) bizwarn bizwarn bizwarn (e95 p95) attention  this announcement system now(e100) under military command"```
