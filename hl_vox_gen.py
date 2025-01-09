@@ -270,13 +270,13 @@ def out_gen(infiles, outfile, cwd, pl, control, syst, fallback_dir):
         sound += tmp[0]
         control_arr = tmp[1]
     os.chdir(cwd)
-    if pl != 2:
+    if pl != "pl":
         sound.export(outfile, format="wav")
-    if pl != 1 and syst != "Windows":
+    if pl != "gn" and syst != "Windows":
         try:
             play(sound)
         except:
-            print("Looks like you don't have ffmpeg installed, but it is required for playback\nif you did not pass '-p 2' option the file has been generated\nif you don't want to install ffmpeg\nto disable this messege, change 'pl' variable value in the main() to 1")
+            print("Looks like you don't have ffmpeg installed, but it is required for playback\nif you did not pass '-p 2' option the file has been generated\nif you don't want to install ffmpeg\nto disable this messege, change 'pl' variable value in the main() to 'gn'")
             sys.exit(0)
 
 def main():
@@ -297,7 +297,7 @@ def main():
     swap_tup = (".", ",")
     outfile = "out.wav"
     options = []
-    pl = 0
+    pl = "both" 
     if len(arg) < 1 or "--help" in arg or "-h" in arg:
         print("Half life vox generator\n")
         print('usage: python3 hl_vox_gen [option(s)] ["file_name[s]"] [option(s)]')
@@ -305,8 +305,8 @@ def main():
         print("-v use different directory for .wav files [vox]")
         print("-o specify the name of the output file [out.wav]")
         if syst != "Windows":
-            print("-p play file after generating if 0, only generate if one")
-            print("only play if 2 [0]")
+            print("--play play file after generating if 0, only generate if 'gn'")
+            print("only play if 'pl' [0]")
         print("-h or --help print this message and exit")
         sys.exit(0)
     new_arg = []
@@ -325,12 +325,12 @@ def main():
                 new_arg.pop(argnum - offset)
                 new_arg.pop(argnum - offset)
                 offset += 2
-            elif arg[argnum] == "-p" and syst != "Windows":
-                pl = int(arg[argnum + 1])
+            elif arg[argnum] == "--play" and syst != "Windows":
+                pl = arg[argnum + 1]
                 new_arg.pop(argnum - offset)
                 new_arg.pop(argnum - offset)
                 offset += 2
-                if pl == 2:
+                if pl == "pl":
                     outfile = "n/a"
             elif arg[argnum] == "--game":
                 game_dir = arg[argnum + 1]
