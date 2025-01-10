@@ -35,6 +35,24 @@ def find_end(arg, argnum, letternum):
     return(out, len(out.split()))
 
 def split_arg(arguments):
+    '''
+    split_arg
+    splits a string into lists of words,
+    where each list is a sentance (uses
+    different vox dir or is a sentence name)
+
+    Parameters
+    ----------
+    arguments : str
+        the string provided by the user
+
+    Returns
+    -------
+    out : list
+        list of lists of strings, where each
+        list ether uses any vox dir (/) or is
+        a sentence name (!)
+    '''
     arguments = arguments.split(" ")
     sentence_count = 0
     out = [[arguments[0]]]
