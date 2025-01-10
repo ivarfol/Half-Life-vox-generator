@@ -212,7 +212,7 @@ def postcontrol(infile, control_arr, prim_vox_dir, fallback_dir):
     if control_arr[2] != 0:
         sound = sound[control_arr[2]*10:] # cut start, 100 = 0.1s
     if control_arr[1] != 0 and control_arr[1] != 100:
-        octaves = (control_arr[1] - 100) / 50 # change pitch, 255 = 1 octave
+        octaves = (control_arr[1] - 100) / 100 # changing pithc in octaves
         new_sample_rate = int(sound.frame_rate * (2 ** octaves))
         hipitch_sound = sound._spawn(sound.raw_data, overrides={'frame_rate': new_sample_rate})
         hipitch_sound = hipitch_sound.set_frame_rate(11025)
