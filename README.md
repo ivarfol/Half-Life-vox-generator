@@ -98,5 +98,8 @@ now you can have several sentence names/voxdirs per sentence
 examples:  
 ``python3 hl_vox_gen.py "!HG_QUEST9 !C1A3_5"``  
 ``python3 hl_vox_gen.py "hgrunt/hostiles! scientist/yees"``  
+``python3 hl_vox_gen.py "hgrunt/hostiles! scientist/yees !HG_QUEST9"``  
+note that the control variables (the letter+number in brackets) are reset each time  
+there is a new vox dir or sentence name in the input  
 ### todo
 get more precise values for pitch (need to change numbers in postcontrol() function)  
