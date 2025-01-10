@@ -210,7 +210,7 @@ def postcontrol(infile, control_arr, prim_vox_dir, fallback_dir):
     if control_arr[0] != 100: # cut end
         sound = sound[:(control_arr[0] - 100)*5]
     if control_arr[2] != 0:
-        sound = sound[control_arr[2]*10:] # cut start, 100 = 0.1s
+        sound = sound[control_arr[2]*5:] # cut start, 100 = 0.1s
     if control_arr[1] != 0 and control_arr[1] != 100:
         octaves = (control_arr[1] - 100) / 85 # changing pithch in octaves
         new_sample_rate = int(sound.frame_rate * (2 ** octaves))
