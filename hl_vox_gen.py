@@ -207,8 +207,8 @@ def postcontrol(infile, control_arr, prim_vox_dir, fallback_dir):
         os.chdir(fallback_dir)
         sound = AudioSegment.from_wav(infile)
         os.chdir(prim_vox_dir)
-    if control_arr[0] != 100:
-        sound = sound[:(control_arr[0] - 100)*10]
+    if control_arr[0] != 100: # cut end
+        sound = sound[:(control_arr[0] - 100)*5]
     if control_arr[2] != 0:
         sound = sound[control_arr[2]*10:] # cut start, 100 = 0.1s
     if control_arr[1] != 0 and control_arr[1] != 100:
