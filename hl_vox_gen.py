@@ -61,8 +61,8 @@ def split_arg(arguments):
             sentence_count += 1
             out += [[arguments[argument_number]]]
         elif arguments[argument_number][0] == "!":
-            sentence_count += 2
-            out += [[arguments[argument_number]], []]
+            sentence_count += 1
+            out += [[arguments[argument_number]]]
         else:
             out[sentence_count] += [arguments[argument_number]]
     if out[-1] == []:
