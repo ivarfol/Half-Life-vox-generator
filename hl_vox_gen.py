@@ -486,7 +486,7 @@ def main():
             sys.exit(1)
         vox_words = os.listdir()
         fallback_dir = hl_dir + "/valve/sound/" + vox_dir
-        if not(os.path.isdir(fallback_dir) or usual_path_flag):
+        if not(os.path.isdir(fallback_dir) and usual_path_flag):
             fallback_dir = os.getcwd()
         fallback_vox_words = os.listdir(fallback_dir)
         arg_new = []
