@@ -270,7 +270,7 @@ def word_sound(control, ctrl_dict, filenum, infiles, control_arr, prim_vox_dir, 
     else:
         return(postcontrol(infiles[filenum], control_arr, prim_vox_dir, fallback_dir), control_arr)
 
-def out_gen(infiles, outfile, cwd, pl, control, syst, fallback_dir):
+def out_gen(infiles, outfile, cwd, pl, control, syst, fallback_dir, control_arr):
     '''
     out_gen
     generates the audio, expeorts/plays it
@@ -296,21 +296,12 @@ def out_gen(infiles, outfile, cwd, pl, control, syst, fallback_dir):
     '''
     prim_vox_dir = os.getcwd()
     ctrl_dict = control_dict(control)
-    control_arr = [100, 0, 0, 100, 0] #end pitch start volume time
     sound, control_arr = word_sound(control, ctrl_dict, 0, infiles, control_arr, prim_vox_dir, fallback_dir)
     for filenum in range(1, len(infiles)):
         tmp = word_sound(control, ctrl_dict, filenum, infiles, control_arr, prim_vox_dir, fallback_dir)
         sound += tmp[0]
         control_arr = tmp[1]
-    os.chdir(cwd)
-    if pl != "pl":
-        sound.export(outfile, format="wav")
-    if pl != "gn" and syst != "Windows":
-        try:
-            play(sound)
-        except:
-            print("Looks like you don't have ffmpeg installed, but it is required for playback\nif you did not pass '-p 2' option the file has been generated\nif you don't want to install ffmpeg\nto disable this messege, change 'pl' variable value in the main() to 'gn'")
-            sys.exit(1)
+    return(sound)
 
 def main():
     syst = system()
@@ -405,7 +396,9 @@ def main():
             print("No arguments!")
         sys.exit(1)
     sentences_arr = split_arg(new_arg[0])
+    final_sound = 0
     for new_arg in sentences_arr:
+        control_arr = [100, 0, 0, 100, 0] #end pitch start volume time
         offset = 0
         os.chdir(hl_dir + "/" + game_dir+"/sound")
         vox_dir = "vox"
@@ -491,8 +484,17 @@ def main():
                 print("invalid argument", argument, "does not exist")
                 sys.exit(1)
         print("arguments: " + "".join(word + " " for word in arg_new) + f"\ncontrol: {control}\noutput file: {outfile}\nvoxdir: {vox_dir}")
-        out_gen(arg_new, outfile, cwd, pl, control, syst, fallback_dir)
-        print("Success")
+        final_sound += out_gen(arg_new, outfile, cwd, pl, control, syst, fallback_dir, control_arr)
+    os.chdir(cwd)
+    if pl != "pl":
+        final_sound.export(outfile, format="wav")
+    if pl != "gn" and syst != "Windows":
+        try:
+            play(final_sound)
+        except:
+            print("Looks like you don't have ffmpeg installed, but it is required for playback\nif you did not pass '-p 2' option the file has been generated\nif you don't want to install ffmpeg\nto disable this messege, change 'pl' variable value in the main() to 'gn'")
+            sys.exit(1)
+    print("Success")
 
 if __name__ == "__main__":
     main()
