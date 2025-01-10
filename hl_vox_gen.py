@@ -306,7 +306,7 @@ def main():
         if os.path.isdir(os.path.dirname(__file__) + "/sound"):
             os.chdir(os.path.dirname(__file__) + "/sound")
         else:
-            print("Looks like you dont have Half-Life 1 installed with steam, ether install it with steam, or\n change the os.chdir at the beggining of main to your Half-Life/valve/sound directory")
+            print("Looks like you dont have Half-Life 1 installed with steam, ether install it with steam, or\ncopy files to ./sound dir as specified in README")
             sys.exit(1)
     hl_dir = os.getcwd()
     game_dir = "valve"
