@@ -67,7 +67,6 @@ def split_arg(arguments):
             out[sentence_count] += [arguments[argument_number]]
     if out[-1] == []:
         out = out[:-1]
-    print(out)
     return(out)
 
 def get_control(control):
@@ -435,10 +434,8 @@ def main():
             except:
                 print("No sentence called", line_name)
                 sys.exit(1)
-        #print(sentence)
         if "/" in sentence[0]:
             vox_dir = sentence[0].split("/")[0]
-            #print(vox_dir)
             sentence = [sentence[0].split("/")[1]] + sentence[1:]
         tmp_arg = []
         for word in sentence:
@@ -451,11 +448,8 @@ def main():
                         tmp_arg += ["_comma"]
                 else:
                     tmp_arg += [word]
-        #print(sentence)
-        #print(tmp_arg)
         new_arg = []
         new_arg.extend(tmp_arg)
-        cut = 0
         control = []
         for argnum in range(len(tmp_arg)):
             flag = False
@@ -510,8 +504,7 @@ def main():
         print("arguments: " + "".join(word + " " for word in arg_new) + f"\ncontrol: {control}\noutput file: {outfile}\nvoxdir: {vox_dir}")
         tmp_control_arr = []
         tmp_control_arr.extend(control_arr)
-        print(tmp_control_arr)
-        final_sound += out_gen(arg_new, outfile, cwd, pl, control, syst, fallback_dir, tmp_control_arr)
+        final_sound += out_gen(arg_new, outfile, cwd, pl, control, syst, fallback_dir, control_arr)
     os.chdir(cwd)
     if pl != "pl":
         final_sound.export(outfile, format="wav")
