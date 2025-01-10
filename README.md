@@ -3,8 +3,8 @@ This is a program for joining and manipulating half life audio files
   
 if you have a copy installed with steam, but would want to uninstall it and  
 keep this program working you can run ``copy_files.sh`` if you are on linux  
-or ``copy_files.bat`` if you are on windows (does not work yet)
-
+or ``copy_files.bat`` if you are on windows  
+  
 if the game was not installed with steam  
 create directory ``sound`` in the same directory as this program, then create dirctory ``valve``  
 in there, if you also wounld like to have acces to blue shift and opposing forece sound files  
