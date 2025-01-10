@@ -473,7 +473,6 @@ def main():
                             temp, cut = find_end(tmp_arg, argnum, letternum)
                         new_arg[argnum - offset] = new_arg[argnum - offset][:letternum]
                         control += [[temp, False, argnum - offset]]
-                        #print(cut)
                         for j in range(cut - 1):
                             new_arg.pop(argnum + j - offset + 1)
                             offset += 1
@@ -502,8 +501,6 @@ def main():
                 print("invalid argument", argument, "does not exist")
                 sys.exit(1)
         print("arguments: " + "".join(word + " " for word in arg_new) + f"\ncontrol: {control}\noutput file: {outfile}\nvoxdir: {vox_dir}")
-        tmp_control_arr = []
-        tmp_control_arr.extend(control_arr)
         final_sound += out_gen(arg_new, outfile, cwd, pl, control, syst, fallback_dir, control_arr)
     os.chdir(cwd)
     if pl != "pl":
