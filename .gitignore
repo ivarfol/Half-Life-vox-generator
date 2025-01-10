@@ -1,1 +1,5 @@
 *.wav
+sound/*
+sound/*/*
+sound/*/*/*
+sound/*/*/*/*

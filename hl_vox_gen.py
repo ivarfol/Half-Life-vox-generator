@@ -295,10 +295,13 @@ def main():
             os.chdir("C:\\Program Files (x86)\\Steam\\steamapps\\common\\Half-Life")
         else:
             os.chdir(os.path.expanduser("~/.local/share/Steam/steamapps/common/Half-Life"))
-        hl_dir = os.getcwd()
     except:
-        print("Looks like you dont have Half-Life 1 installed with steam, ether install it with steam, or\n change the os.chdir at the beggining of main to your Half-Life/valve/sound directory")
-        sys.exit(1)
+        if os.path.isdir(os.path.dirname(__file__) + "/sound"):
+            os.chdir(os.path.dirname(__file__) + "/sound")
+        else:
+            print("Looks like you dont have Half-Life 1 installed with steam, ether install it with steam, or\n change the os.chdir at the beggining of main to your Half-Life/valve/sound directory")
+            sys.exit(1)
+    hl_dir = os.getcwd()
     game_dir = "valve"
     vox_dir = "./vox"
     arg = sys.argv[1:]
@@ -307,21 +310,16 @@ def main():
     options = []
     pl = "both" 
     if len(arg) < 1 or "--help" in arg or "-h" in arg:
-        print("Half life vox generator\n")
-        print('usage: python3 hl_vox_gen [option(s)] ["file_name[s]"] [option(s)]')
-        print("supported optins [default in brackets]:")
-        print("-v use different directory for .wav files [vox]")
-        print("-o specify the name of the output file [out.wav]")
-        print("--game specify the game: gearbox, bshift or valve [valve]")
+        print('Half life vox generator\n\nusage: python3 hl_vox_gen [option(s)] ["file_name[s]"] [option(s)]\nsupported optins [default in brackets]:\n-v use different directory for .wav files [vox]\n-o specify the name of the output file [out.wav]\n--game specify the game: gearbox, bshift or valve [valve]')
         if syst != "Windows":
-            print("--play play file after generating if 0, only generate if 'gn'")
-            print("only play if 'pl' [0]")
+            print("--play play file after generating if both, only generate if 'gn'\nonly play if 'pl' [both]")
         print("-h or --help print this message and exit")
         sys.exit(0)
     new_arg = []
     control = []
     new_arg.extend(arg)
     offset = 0
+    usual_path_flag = True
     for argnum in range(len(arg)):
         if arg[argnum][0] == "-":
             if arg[argnum] == "-o":
@@ -342,6 +340,7 @@ def main():
                 new_arg.pop(argnum - offset)
                 new_arg.pop(argnum - offset)
                 offset += 2
+                usual_path_flag = False
             elif arg[argnum] == "--play" and syst != "Windows":
                 if len(arg) > argnum + 1:
                     pl = arg[argnum + 1]
@@ -369,7 +368,11 @@ def main():
                 else:
                     print(game_dir, "is not a valid game")
                     sys.exit(1)
-    os.chdir(game_dir+"/sound")
+    if usual_path_flag:
+        if os.path.isdir("valve"):
+            os.chdir(game_dir+"/sound")
+        else:
+            print("No valve dir found, but it is required")
     if len(new_arg) != 1:
         if len(new_arg) > 1:
             print("Too many arguments!")
