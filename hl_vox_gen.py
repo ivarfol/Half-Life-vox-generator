@@ -139,6 +139,13 @@ def timecompress(time_pr, sound):
         current_pos += step
     return(new_sound)
 
+def change_volume(volume):
+    if volume != 0:
+        volume_out = 10 * log(volume / 100, 10) # change volume, 0 = -10db
+    else:
+        volume_out = -100
+    return(volume_out)
+
 def postcontrol(infile, control_arr, prim_vox_dir, fallback_dir):
     '''
     postcontrol
@@ -177,7 +184,7 @@ def postcontrol(infile, control_arr, prim_vox_dir, fallback_dir):
         hipitch_sound = hipitch_sound.set_frame_rate(11025)
         sound = hipitch_sound
     if control_arr[3] != 100:
-        sound += 10 * log(control_arr[3] / 100, 10) # change volume, 0 = -10db
+        sound += change_volume(control_arr[3])
     if control_arr[4] != 0:
         sound = timecompress(control_arr[4], sound) # time compression
     return(sound)
