@@ -57,16 +57,15 @@ def split_arg(arguments):
     sentence_count = 0
     out = [[arguments[0]]]
     for argument_number in range(1, len(arguments)):
-        if "/" in arguments[argument_number]:
-            sentence_count += 1
-            out += [[arguments[argument_number]]]
-        elif arguments[argument_number][0] == "!":
-            sentence_count += 1
-            out += [[arguments[argument_number]]]
-        else:
-            out[sentence_count] += [arguments[argument_number]]
-    if out[-1] == []:
-        out = out[:-1]
+        if arguments[argument_number] != "":
+            if "/" in arguments[argument_number]:
+                sentence_count += 1
+                out += [[arguments[argument_number]]]
+            elif arguments[argument_number][0] == "!":
+                sentence_count += 1
+                out += [[arguments[argument_number]]]
+            else:
+                out[sentence_count] += [arguments[argument_number]]
     return(out)
 
 def get_control(control):
