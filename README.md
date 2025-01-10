@@ -1,6 +1,5 @@
 # Half-Life-vox-generator
 This is a program for joining and manipulating half life audio files  
-download release [here](https://github.com/ivarfol/Half-Life-vox-generator/releases)
   
 if you have a copy installed with steam, but would want to uninstall it and  
 keep this program working you can run ``copy_files.sh`` if you are on linux  
