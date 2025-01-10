@@ -415,31 +415,33 @@ def main():
         sys.exit(1)
     sentences_arr = split_arg(new_arg[0])
     final_sound = 0
-    for new_arg in sentences_arr:
+    for sentence in sentences_arr:
         control_arr = [100, 0, 0, 100, 0] #end pitch start volume time
         offset = 0
         os.chdir(hl_dir + "/" + game_dir+"/sound")
         vox_dir = "vox"
-        if new_arg[0][0] == "!":
-            line_name = new_arg[0][1:]
+        if sentence[0][0] == "!":
+            line_name = sentence[0][1:]
             try:
                 with open("sentences.txt", "r", encoding="cp1252") as file:
                     for line in file:
                         if line.strip().split(" ")[0] == line_name:
                             sentence_output = line.strip()
-                            for add_word in new_arg[1:]:
+                            for add_word in sentence[1:]:
                                 sentence_output += " " + add_word
                             print(sentence_output)
-                            new_arg = line.strip().split(" ")[1:] + new_arg[1:]
+                            sentence = line.strip().split(" ")[1:] + sentence[1:]
                             break
             except:
                 print("No sentence called", line_name)
                 sys.exit(1)
-        if "/" in new_arg[0]:
-            vox_dir = new_arg[0].split("/")[0]
-            new_arg = [new_arg[0].split("/")[1]] + new_arg[1:]
+        #print(sentence)
+        if "/" in sentence[0]:
+            vox_dir = sentence[0].split("/")[0]
+            #print(vox_dir)
+            sentence = [sentence[0].split("/")[1]] + sentence[1:]
         tmp_arg = []
-        for word in new_arg:
+        for word in sentence:
             if word != "":
                 if word[-1] in swap_tup:
                     tmp_arg += [word[:-1]]
@@ -449,8 +451,12 @@ def main():
                         tmp_arg += ["_comma"]
                 else:
                     tmp_arg += [word]
+        #print(sentence)
+        #print(tmp_arg)
         new_arg = []
         new_arg.extend(tmp_arg)
+        cut = 0
+        control = []
         for argnum in range(len(tmp_arg)):
             flag = False
             for letternum in range(len(tmp_arg[argnum])):
@@ -502,7 +508,10 @@ def main():
                 print("invalid argument", argument, "does not exist")
                 sys.exit(1)
         print("arguments: " + "".join(word + " " for word in arg_new) + f"\ncontrol: {control}\noutput file: {outfile}\nvoxdir: {vox_dir}")
-        final_sound += out_gen(arg_new, outfile, cwd, pl, control, syst, fallback_dir, control_arr)
+        tmp_control_arr = []
+        tmp_control_arr.extend(control_arr)
+        print(tmp_control_arr)
+        final_sound += out_gen(arg_new, outfile, cwd, pl, control, syst, fallback_dir, tmp_control_arr)
     os.chdir(cwd)
     if pl != "pl":
         final_sound.export(outfile, format="wav")
