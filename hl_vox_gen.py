@@ -34,6 +34,24 @@ def find_end(arg, argnum, letternum):
             break
     return(out, len(out.split()))
 
+def split_arg(arguments):
+    arguments = arguments.split(" ")
+    sentence_count = 0
+    out = [[arguments[0]]]
+    for argument_number in range(1, len(arguments)):
+        if "/" in arguments[argument_number]:
+            sentence_count += 1
+            out += [[arguments[argument_number]]]
+        elif arguments[argument_number][0] == "!":
+            sentence_count += 2
+            out += [[arguments[argument_number]], []]
+        else:
+            out[sentence_count] += [arguments[argument_number]]
+    if out[-1] == []:
+        out = out[:-1]
+    print(out)
+    return(out)
+
 def get_control(control):
     '''
     get_control
@@ -386,92 +404,95 @@ def main():
         else:
             print("No arguments!")
         sys.exit(1)
-    offset = 0
-    new_arg = new_arg[0].split(" ")
-    if new_arg[0][0] == "!":
-        line_name = new_arg[0][1:]
-        try:
-            with open("sentences.txt", "r", encoding="cp1252") as file:
-                for line in file:
-                    if line.strip().split(" ")[0] == line_name:
-                        sentence_output = line.strip()
-                        for add_word in new_arg[1:]:
-                            sentence_output += " " + add_word
-                        print(sentence_output)
-                        new_arg = line.strip().split(" ")[1:] + new_arg[1:]
-                        break
-        except:
-            print("No sentence called", line_name)
-            sys.exit(1)
-    if "/" in new_arg[0]:
-        vox_dir = new_arg[0].split("/")[0]
-        new_arg = [new_arg[0].split("/")[1]] + new_arg[1:]
-    tmp_arg = []
-    for word in new_arg:
-        if word != "":
-            if word[-1] in swap_tup:
-                tmp_arg += [word[:-1]]
-                if word[-1] == ".":
-                    tmp_arg += ["_period"]
-                else:
-                    tmp_arg += ["_comma"]
-            else:
-                tmp_arg += [word]
-    new_arg = []
-    new_arg.extend(tmp_arg)
-    for argnum in range(len(tmp_arg)):
-        flag = False
-        for letternum in range(len(tmp_arg[argnum])):
-            if tmp_arg[argnum][letternum] == "(":
-                if letternum == 0:
-                    temp, cut = find_end(tmp_arg, argnum, 0)
-                    control += [[temp, True, argnum - offset]]
-                    if cut == argnum:
-                        new_arg.pop(argnum - offset)
-                        offset += 1
+    sentences_arr = split_arg(new_arg[0])
+    for new_arg in sentences_arr:
+        offset = 0
+        os.chdir(hl_dir + "/" + game_dir+"/sound")
+        vox_dir = "vox"
+        if new_arg[0][0] == "!":
+            line_name = new_arg[0][1:]
+            try:
+                with open("sentences.txt", "r", encoding="cp1252") as file:
+                    for line in file:
+                        if line.strip().split(" ")[0] == line_name:
+                            sentence_output = line.strip()
+                            for add_word in new_arg[1:]:
+                                sentence_output += " " + add_word
+                            print(sentence_output)
+                            new_arg = line.strip().split(" ")[1:] + new_arg[1:]
+                            break
+            except:
+                print("No sentence called", line_name)
+                sys.exit(1)
+        if "/" in new_arg[0]:
+            vox_dir = new_arg[0].split("/")[0]
+            new_arg = [new_arg[0].split("/")[1]] + new_arg[1:]
+        tmp_arg = []
+        for word in new_arg:
+            if word != "":
+                if word[-1] in swap_tup:
+                    tmp_arg += [word[:-1]]
+                    if word[-1] == ".":
+                        tmp_arg += ["_period"]
                     else:
-                        for i in range(cut):
-                            new_arg.pop(argnum + i - offset)
+                        tmp_arg += ["_comma"]
+                else:
+                    tmp_arg += [word]
+        new_arg = []
+        new_arg.extend(tmp_arg)
+        for argnum in range(len(tmp_arg)):
+            flag = False
+            for letternum in range(len(tmp_arg[argnum])):
+                if tmp_arg[argnum][letternum] == "(":
+                    if letternum == 0:
+                        temp, cut = find_end(tmp_arg, argnum, 0)
+                        control += [[temp, True, argnum - offset]]
+                        if cut == argnum:
+                            new_arg.pop(argnum - offset)
                             offset += 1
-                else:
-                    if new_arg[argnum - offset][-1] == ")":
-                        temp = new_arg[argnum - offset][letternum:]
-                        cut = 1
+                        else:
+                            for i in range(cut):
+                                new_arg.pop(argnum + i - offset)
+                                offset += 1
                     else:
-                        temp, cut = find_end(tmp_arg, argnum, letternum)
-                    new_arg[argnum - offset] = new_arg[argnum - offset][:letternum]
-                    control += [[temp, False, argnum - offset]]
-                    #print(cut)
-                    for j in range(cut - 1):
-                        new_arg.pop(argnum + j - offset + 1)
-                        offset += 1
-                flag = True
-                break
-            if flag:
-                break
-    try:
-        os.chdir(os.path.expanduser(vox_dir))
-    except:
-        print(vox_dir, "is not a valid vox dir")
-        sys.exit(1)
-    vox_words = os.listdir()
-    fallback_dir = hl_dir + "/valve/sound/" + vox_dir
-    if not(os.path.isdir(fallback_dir) or usual_path_flag):
-        fallback_dir = os.getcwd()
-    fallback_vox_words = os.listdir(fallback_dir)
-    arg_new = []
-    for argument in new_arg:
-        argument += ".wav"
-        if argument in vox_words or argument in fallback_vox_words:
-            arg_new += [argument]
-        elif argument.lower() in vox_words or argument.lower() in fallback_vox_words:
-            arg_new += [argument.lower()]
-        else:
-            print("invalid argument", argument, "does not exist")
+                        if new_arg[argnum - offset][-1] == ")":
+                            temp = new_arg[argnum - offset][letternum:]
+                            cut = 1
+                        else:
+                            temp, cut = find_end(tmp_arg, argnum, letternum)
+                        new_arg[argnum - offset] = new_arg[argnum - offset][:letternum]
+                        control += [[temp, False, argnum - offset]]
+                        #print(cut)
+                        for j in range(cut - 1):
+                            new_arg.pop(argnum + j - offset + 1)
+                            offset += 1
+                    flag = True
+                    break
+                if flag:
+                    break
+        try:
+            os.chdir(os.path.expanduser(vox_dir))
+        except:
+            print(vox_dir, "is not a valid vox dir")
             sys.exit(1)
-    print("arguments: " + "".join(word + " " for word in arg_new) + f"\ncontrol: {control}\noutput file: {outfile}\nvoxdir: {vox_dir}")
-    out_gen(arg_new, outfile, cwd, pl, control, syst, fallback_dir)
-    print("Success")
+        vox_words = os.listdir()
+        fallback_dir = hl_dir + "/valve/sound/" + vox_dir
+        if not(os.path.isdir(fallback_dir) or usual_path_flag):
+            fallback_dir = os.getcwd()
+        fallback_vox_words = os.listdir(fallback_dir)
+        arg_new = []
+        for argument in new_arg:
+            argument += ".wav"
+            if argument in vox_words or argument in fallback_vox_words:
+                arg_new += [argument]
+            elif argument.lower() in vox_words or argument.lower() in fallback_vox_words:
+                arg_new += [argument.lower()]
+            else:
+                print("invalid argument", argument, "does not exist")
+                sys.exit(1)
+        print("arguments: " + "".join(word + " " for word in arg_new) + f"\ncontrol: {control}\noutput file: {outfile}\nvoxdir: {vox_dir}")
+        out_gen(arg_new, outfile, cwd, pl, control, syst, fallback_dir)
+        print("Success")
 
 if __name__ == "__main__":
     main()
