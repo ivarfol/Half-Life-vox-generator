@@ -1,7 +1,7 @@
 import sys, os
 from platform import system
 from pydub import AudioSegment
-from math import log
+from math import log, sqrt
 if system() != "Windows":
     from pydub.playback import play
 
@@ -212,7 +212,8 @@ def postcontrol(infile, control_arr, prim_vox_dir, fallback_dir):
     if control_arr[2] != 0:
         sound = sound[control_arr[2]*5:] # cut start, 100 = 0.1s
     if control_arr[1] != 0 and control_arr[1] != 100:
-        octaves = (control_arr[1] - 100) / 85 # changing pithch in octaves
+        d = 3.1118 + 7.0056*sqrt(control_arr[1])
+        octaves = (control_arr[1] - 100) / d # changing pithch in octaves
         new_sample_rate = int(sound.frame_rate * (2 ** octaves))
         hipitch_sound = sound._spawn(sound.raw_data, overrides={'frame_rate': new_sample_rate})
         hipitch_sound = hipitch_sound.set_frame_rate(11025)
@@ -510,6 +511,7 @@ def main():
         except:
             print("Looks like you don't have ffmpeg installed, but it is required for playback\nif you did not pass '-p 2' option the file has been generated\nif you don't want to install ffmpeg\nto disable this messege, change 'pl' variable value in the main() to 'gn'")
             sys.exit(1)
+        final_sound.close()
     print("Success")
 
 if __name__ == "__main__":
