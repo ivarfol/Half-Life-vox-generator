@@ -44,7 +44,7 @@ sound
 \_valve
   \_sound
 ```
-note that valve sounds are required for the expansios, as some phrases rely on the vanilla sounds
+note that valve sounds are required for the expansios, as some phrases rely on the vanilla sounds  
 [link to a repo with sound files](https://github.com/sourcesounds/hl1)  
 You will need pydub library installed  
 ## Usage
@@ -101,5 +101,7 @@ examples:
 ``python3 hl_vox_gen.py "hgrunt/hostiles! scientist/yees !HG_QUEST9"``  
 note that the control variables (the letter+number in brackets) are reset each time  
 there is a new vox dir or sentence name in the input  
-### todo
-get more precise values for pitch (need to change numbers in postcontrol() function)  
+  
+Now pitch control works as intended  
+There is still a small discrepancy when joining words with different pitch values,  
+but it's well within the acceptable bounds
