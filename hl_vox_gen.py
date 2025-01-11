@@ -417,8 +417,11 @@ def main():
     for sentence in sentences_arr:
         control_arr = [100, 0, 0, 100, 0] #end pitch start volume time
         offset = 0
-        os.chdir(hl_dir + "/" + game_dir+"/sound")
-        vox_dir = "vox"
+        if usual_path_flag:
+            os.chdir(hl_dir + "/" + game_dir+"/sound")
+            vox_dir = "vox"
+        else:
+            os.chdir(vox_dir)
         if sentence[0][0] == "!":
             line_name = sentence[0][1:]
             try:
@@ -511,7 +514,6 @@ def main():
         except:
             print("Looks like you don't have ffmpeg installed, but it is required for playback\nif you did not pass '-p 2' option the file has been generated\nif you don't want to install ffmpeg\nto disable this messege, change 'pl' variable value in the main() to 'gn'")
             sys.exit(1)
-        final_sound.close()
     print("Success")
 
 if __name__ == "__main__":
