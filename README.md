@@ -1,5 +1,9 @@
 # Half-Life-vox-generator
 This is a program for joining and manipulating half life audio files  
+You will need pydub library installed  
+```
+pip install pydub
+```
   
 if you have a copy installed with steam, but would want to uninstall it and  
 keep this program working you can run ``copy_files.sh`` if you are on linux  
@@ -46,7 +50,6 @@ sound
 ```
 note that valve sounds are required for the expansios, as some phrases rely on the vanilla sounds  
 [link to a repo with sound files](https://github.com/sourcesounds/hl1)  
-You will need pydub library installed  
 ## Usage
 python3 hl\_vox\_gen.py \[option(s)\] \["sentence"\] \[option(s)\]  
 supported options \[default in brackets\]:  
@@ -79,6 +82,11 @@ the above options can be ether appended to a word ``test(p90)`` to
 only change the word, or used separetly to change all words after the option:  
 ``test (p95) test test`` in this example the first ``test`` will sound  
 differently to the two after the ```p95```  
+
+the program outputs the files in wav format, but you can convert it to mp3 with ffmpeg:  
+```
+ffmpeg -i input.wav -vn -ar 11025 -ac 1 -b:a 88.2k output.mp3
+```
 
 for more information visit [this article](https://twhl.info/wiki/page/sentences.txt)  
 
