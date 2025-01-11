@@ -202,15 +202,15 @@ def postcontrol(infile, control_arr, prim_vox_dir, fallback_dir):
         audio after the manipulations
     '''
     try:
-        sound = AudioSegment.from_wav(infile) # cut end, 100 = 0.1s
+        sound = AudioSegment.from_wav(infile) # cut end
     except:
         os.chdir(fallback_dir)
         sound = AudioSegment.from_wav(infile)
         os.chdir(prim_vox_dir)
     if control_arr[0] != 100: # cut end
-        sound = sound[:(control_arr[0] - 100)*5]
+        sound = sound[:(control_arr[0] - 100)*202/25]
     if control_arr[2] != 0:
-        sound = sound[control_arr[2]*5:] # cut start, 100 = 0.1s
+        sound = sound[control_arr[2]*202/25:] # cut start
     if control_arr[1] != 0 and control_arr[1] != 100:
         d = 3.1118 + 7.0056*sqrt(control_arr[1])
         octaves = (control_arr[1] - 100) / d # changing pithch in octaves
