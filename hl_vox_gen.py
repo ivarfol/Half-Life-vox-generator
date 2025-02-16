@@ -203,7 +203,7 @@ def postcontrol(infile, control_arr, prim_vox_dir, fallback_dir):
     '''
     try:
         sound = AudioSegment.from_wav(infile) # cut end
-    except:
+    except FileNotFoundError:
         os.chdir(fallback_dir)
         sound = AudioSegment.from_wav(infile)
         os.chdir(prim_vox_dir)
@@ -328,7 +328,7 @@ def main():
             os.chdir("C:\\Program Files (x86)\\Steam\\steamapps\\common\\Half-Life")
         else:
             os.chdir(os.path.expanduser("~/.local/share/Steam/steamapps/common/Half-Life"))
-    except:
+    except FileNotFoundError:
         if os.path.isdir(os.path.dirname(__file__) + "/sound"):
             os.chdir(os.path.dirname(__file__) + "/sound")
         else:
@@ -485,9 +485,17 @@ def main():
                     break
         try:
             os.chdir(os.path.expanduser(vox_dir))
-        except:
-            print(vox_dir, "is not a valid vox dir")
-            sys.exit(1)
+        except FileNotFoundError:
+            if game_dir == "valve":
+                print(vox_dir, "is not a valid vox dir")
+                sys.exit(1)
+            else:
+                os.chdir("../../valve/sound")
+                try:
+                    os.chdir(os.path.expanduser(vox_dir))
+                except FileNotFoundError:
+                    print(vox_dir, "is not a valid vox dir")
+                    sys.exit(1)
         vox_words = os.listdir()
         fallback_dir = hl_dir + "/valve/sound/" + vox_dir
         if not(os.path.isdir(fallback_dir) and usual_path_flag):
