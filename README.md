@@ -90,9 +90,7 @@ ffmpeg -i input.wav -vn -ar 11025 -ac 1 -b:a 88.2k output.mp3
 
 for more information visit [this article](https://twhl.info/wiki/page/sentences.txt)  
 
-### New features
-now -v option accepts paths to any location, not just the Half-Life/sound directory  
-now you can specify vox directory like in sentences.txt, example: ``python3 hl_vox_gen.py "hgrunt/freeman!"``  
+you can specify vox directory like in sentences.txt, example: ``python3 hl_vox_gen.py "hgrunt/freeman!"``  
 is the same as ``python3 hl_vox_gen.py -v hgrunt "freeman!"``  
 now you can pass the sentence name instead of the whole sentence ``python3 hl_vox_gen.py "!HG_ALERT5"``  
 is the same as ``python3 hl_vox_gen.py "hgrunt/(t20) clik squad!, neutralize!(e90) freeman! clik"``  
@@ -102,14 +100,10 @@ you can now use --game option to use voicelines from opposing force (--game gear
 the voice lines from the original game will still be accesible if the vox directory with the same name exists  
 example: ``python3 hl_vox_gen.py "otis/reputation beer" -o reputation.wav --game gearbox``  
   
-now you can have several sentence names/voxdirs per sentence  
+you can have several sentence names/voxdirs per sentence  
 examples:  
 ``python3 hl_vox_gen.py "!HG_QUEST9 !C1A3_5"``  
 ``python3 hl_vox_gen.py "hgrunt/hostiles! scientist/yees"``  
 ``python3 hl_vox_gen.py "hgrunt/hostiles! scientist/yees !HG_QUEST9"``  
 note that the control variables (the letter+number in brackets) are reset each time  
 there is a new vox dir or sentence name in the input  
-  
-Now pitch control works as intended  
-There is still a small discrepancy when joining words with different pitch values,  
-but it's well within the acceptable bounds
